@@ -95,18 +95,82 @@ def init_db():
 
 
             cur.execute("""
-            CREATE TABLE IF NOT EXISTS event_participant (
+            CREATE TABLE IF NOT EXISTS participant (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 _event_id INTEGER NOT NULL,
                 _entity_id INTEGER NOT NULL,
                 role TEXT DEFAULT 'entry' CHECK(role IN ('home', 'away', 'entry')),
                 stage_position INTEGER CHECK (stage_position > 0),
                 
-                FOREIGN KEY (_event_id) REFERENCES event(id)
+                FOREIGN KEY (_event_id) REFERENCES events(id)
                     ON UPDATE CASCADE
             )
             """)
 
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS participant_score (
+                _event_id INTEGER NOT NULL,
+                _participant_id INTEGER NOT NULL,
+                score_value NUMERIC NOT NULL,
+                score_label TEXT NOT NULL,    -- points, goals, etc
+                
+                FOREIGN KEY (_event_id) REFERENCES events(id)
+                    ON UPDATE CASCADE
+                
+                FOREIGN KEY (_participant_id) REFERENCES participants(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT 
+                
+                PRIMARY KEY(_event_id, _participant_id, score_label)
+            )
+            """)
+
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS event_results (
+                _event_id INTEGER NOT NULL PRIMARY KEY,
+                _entity_id INTEGER, 
+                outcome_type TEXT DEFAULT 'win' CHECK (outcome_type IN('win', 'draw', 'canceled', 'abandoned')),
+                message TEXT,
+                
+                FOREIGN KEY (_event_id) REFERENCES events(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
+                
+                FOREIGN KEY (_entity_id) REFERENCES entities(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT 
+
+                CHECK (
+                    (outcome_type = 'win' AND _entity_id IS NOT NULL) OR
+                    (outcome_type != 'win' AND _entity_id IS NULL)
+                )
+            )
+            """)
+
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS event_incidents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _event_id INTEGER NOT NULL,
+                _participant_id INTEGER NOT NULL,   -- team or athlete
+                _entity_id INTEGER,                 -- specific athlete
+                incident_type TEXT NOT NULL,        -- yellow card, red_card etc
+                minute INTEGER,                     -- time during event when incident happened
+                        
+                FOREIGN KEY (_event_id) REFERENCES events(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
+
+                FOREIGN KEY (_participant_id) REFERENCES participants(id)
+                    ON UPDATE CASCADE
+                        
+                FOREIGN KEY (_entity_id) REFERENCES entities(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT                    
+                    
+            )
+            """)
 
     except Exception as e:
         print("SQLite error:", e)
