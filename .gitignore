@@ -1,1 +1,3 @@
 .venv/
+tables.txt
+*.db
