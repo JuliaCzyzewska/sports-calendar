@@ -11,8 +11,8 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 status TEXT DEFAULT 'scheduled' CHECK(status IN ('scheduled','cancelled','played', 'live')),
                 season INTEGER NOT NULL,
-                dateVenue TEXT,             -- YYYY-MM-DD
-                timeVenueUTC TEXT,          -- HH:MM:SS 
+                date_venue TEXT,             -- YYYY-MM-DD
+                time_venue_UTC TEXT,          -- HH:MM:SS 
                 _stage_id INTEGER,
                 _venue_id INTEGER,
                 _competition_id INTEGER NOT NULL,
@@ -68,12 +68,42 @@ def init_db():
             )
             """)
 
-
             cur.execute("""
             CREATE TABLE IF NOT EXISTS countries (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 abbreviation TEXT NOT NULL
+            )
+            """)
+
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS entities (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL CHECK(type IN ('team', 'athelete')),
+                name TEXT NOT NULL,
+                official_name TEXT NOT NULL,
+                slug TEXT NOT NULL,
+                abbreviation TEXT,
+                _country_id INTEGER NOT NULL,
+                        
+                FOREIGN KEY (_country_id) REFERENCES countries(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT           
+            )
+            """)
+
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS event_participant (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _event_id INTEGER NOT NULL,
+                _entity_id INTEGER NOT NULL,
+                role TEXT DEFAULT 'entry' CHECK(role IN ('home', 'away', 'entry')),
+                stage_position INTEGER CHECK (stage_position > 0),
+                
+                FOREIGN KEY (_event_id) REFERENCES event(id)
+                    ON UPDATE CASCADE
             )
             """)
 
