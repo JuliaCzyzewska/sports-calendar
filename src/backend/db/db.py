@@ -9,7 +9,7 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                status TEXT DEFAULT 'scheduled', 
+                status TEXT DEFAULT 'scheduled' CHECK(status IN ('scheduled','cancelled','played', 'live')),
                 season INTEGER NOT NULL,
                 dateVenue TEXT,             -- YYYY-MM-DD
                 timeVenueUTC TEXT,          -- HH:MM:SS 
@@ -29,34 +29,22 @@ def init_db():
             )
             """)
 
-            cur.execute("""
-            CREATE TABLE IF NOT EXISTS participation_types (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE NOT NULL
-            )
-            """)
 
-            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("team",))
-            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("individual",))
-            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("relay",))
+
               
             cur.execute("""
             CREATE TABLE IF NOT EXISTS competitions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                sport_type TEXT,
-                participation_type_id INTEGER,
-                        
-                FOREIGN KEY (participation_type_id) REFERENCES participation_types(id)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT
+                name TEXT NOT NULL,
+                sport_type TEXT NOT NULL,
+                participation_type TEXT NOT NULL CHECK(participation_type IN ('team', 'individual', 'relay'))
             )
             """)
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS stages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                _competition_id INTEGER,
+                _competition_id INTEGER NOT NULL,
                 name TEXT,
                 ordering INTEGER CHECK(ordering > 0),
                 
@@ -69,9 +57,9 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS venues (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT, 
+                name TEXT NOT NULL, 
                 city NAME,
-                _country_id INTEGER,
+                _country_id INTEGER NOT NULL,
                 
                 FOREIGN KEY (_country_id) REFERENCES countries(id)
                     ON UPDATE CASCADE
@@ -84,8 +72,8 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS countries (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                abbreviation TEXT
+                name TEXT NOT NULL,
+                abbreviation TEXT NOT NULL
             )
             """)
 
