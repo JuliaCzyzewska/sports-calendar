@@ -25,27 +25,67 @@ def init_db():
                         
                 FOREIGN KEY (_competition_id) REFERENCES competitions(id)
                     ON UPDATE CASCADE
-                    ON DELETE RESTRICT      -- dont let delete if its connected to event
+                    ON DELETE RESTRICT      -- dont let competition be deleted if its connected to event
             )
             """)
-                        
-                        
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS participation_types (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT UNIQUE NOT NULL
+            )
+            """)
+
+            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("team",))
+            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("individual",))
+            cur.execute("INSERT OR IGNORE INTO participation_types (name) VALUES (?)", ("relay",))
+              
             cur.execute("""
             CREATE TABLE IF NOT EXISTS competitions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                sport_type TEXT,
+                participation_type_id INTEGER,
+                        
+                FOREIGN KEY (participation_type_id) REFERENCES participation_types(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT
             )
             """)
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS stages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _competition_id INTEGER,
+                name TEXT,
+                ordering INTEGER CHECK(ordering > 0),
+                
+                FOREIGN KEY (_competition_id) REFERENCES competitions(id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE 
             )
             """)
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS venues (
-                id INTEGER PRIMARY KEY AUTOINCREMENT
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT, 
+                city NAME,
+                _country_id INTEGER,
+                
+                FOREIGN KEY (_country_id) REFERENCES countries(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT 
+                        
+            )
+            """)
 
+
+            cur.execute("""
+            CREATE TABLE IF NOT EXISTS countries (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                abbreviation TEXT
             )
             """)
 
