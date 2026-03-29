@@ -1,0 +1,68 @@
+{
+  "events": [
+    {
+      "status": "played",
+      "season": 2024,
+      "date_venue": "2026-05-23",
+      "time_venue_UTC": "18:00:00",
+      "_stage_id": 1,
+      "_venue_id": 1,
+      "_competition_slug": "uefa-womens-champions-league"
+    },
+    {
+      "status": "played",
+      "season": 2022,
+      "date_venue": "2025-06-15",
+      "time_venue_UTC": "16:00:00",
+      "_stage_id": 2,
+      "_venue_id": 2,
+      "_competition_slug": "fifa-world-cup"
+    },
+    {
+      "status": "cancelled",
+      "season": 2024,
+      "date_venue": "2026-04-20",
+      "time_venue_UTC": "10:00:00",
+      "_stage_id": 3,
+      "_venue_id": 3,
+      "_competition_slug": "boston-marathon"
+    },
+    {
+      "status": "played",
+      "season": 2024,
+      "date_venue": "2024-08-04",
+      "time_venue_UTC": "19:00:00",
+      "_stage_id": 4,
+      "_venue_id": 4,
+      "_competition_slug": "olympic-100m-sprint-men"
+    },
+    {
+      "status": "played",
+      "season": 2026,
+      "date_venue": "2026-03-25",
+      "time_venue_UTC": "09:00:00",
+      "_stage_id": 5,
+      "_venue_id": 5,
+      "_competition_slug": "world-figure-skating-championships-individual-women"
+    },
+    {
+      "status": "played",
+      "season": 2026,
+      "date_venue": "2026-03-26",
+      "time_venue_UTC": "09:00:00",
+      "_stage_id": 6,
+      "_venue_id": 5,
+      "_competition_slug": "world-figure-skating-championships-pairs"
+    },
+    {
+      "status": "scheduled",
+      "season": 2027,
+      "date_venue": "2026-08-01",
+      "time_venue_UTC": "14:00:00",
+      "_stage_id": 7,
+      "_venue_id": 4,
+      "_competition_slug": "olympic-4x100m-relay-mixed"
+    }
+
+  ]
+}

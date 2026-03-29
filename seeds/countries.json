@@ -22,6 +22,9 @@
     { "abbreviation": "IE", "name": "Ireland" },
     { "abbreviation": "US", "name": "United States" },
     { "abbreviation": "CA", "name": "Canada" },
-    { "abbreviation": "QA", "name": "Qatar" }
+    { "abbreviation": "QA", "name": "Qatar" },
+    { "abbreviation": "ETH", "name": "Ethiopia" },
+    { "abbreviation": "ARG", "name": "Argentina" },
+    { "abbreviation": "GEO", "name": "Georgia" }
   ]
 }

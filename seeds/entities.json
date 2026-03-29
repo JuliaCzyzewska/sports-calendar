@@ -9,6 +9,14 @@
       "_country_abr": "GB"
     },
     {
+    "type": "team",
+    "name": "FC Barcelona Femení",
+    "official_name": "Futbol Club Barcelona Femení",
+    "slug": "fc-barcelona-femeni",
+    "abbreviation": "BAR",
+    "_country_abr": "ES"
+    },
+    {
       "type": "team",
       "name": "Argentina National Team",
       "official_name": "Argentina National Team",
@@ -17,12 +25,12 @@
       "_country_abr": "AR"
     },
     {
-      "type": "team",
-      "name": "Spain National Team",
-      "official_name": "Spain National Team",
-      "slug": "spain-national-team",
-      "abbreviation": "ESP",
-      "_country_abr": "ES"
+    "type": "team",
+    "name": "France National Team",
+    "official_name": "France National Football Team",
+    "slug": "france-national-team",
+    "abbreviation": "FRA",
+    "_country_abr": "FR"
     },
     {
       "type": "athlete",
@@ -42,9 +50,25 @@
     },
     {
       "type": "athlete",
+      "name": "Noah Lyles",
+      "official_name": "Noah Lyles",
+      "slug": "noah-lyles",
+      "abbreviation": null,
+      "_country_abr": "US"
+    },
+    {
+      "type": "athlete",
       "name": "Kaori Sakamoto",
       "official_name": "Kaori Sakamoto",
       "slug": "kaori-sakamoto",
+      "abbreviation": null,
+      "_country_abr": "JP"
+    },
+    {
+      "type": "athlete",
+      "name": "Mone Chiba",
+      "official_name": "Mone Chiba",
+      "slug": "mone-chiba",
       "abbreviation": null,
       "_country_abr": "JP"
     },
@@ -58,11 +82,27 @@
     },
     {
       "type": "team",
+      "name": "Anastasiia Metelkina & Luka Berulava",
+      "official_name": "Anastasiia Metelkina & Luka Berulava",
+      "slug": "metelkina-berulava-pairs",
+      "abbreviation": null,
+      "_country_abr": "GEO"
+    },
+    {
+      "type": "team",
       "name": "Team USA",
       "official_name": "Team USA",
       "slug": "team-usa-relay",
       "abbreviation": "USA",
       "_country_abr": "US"
+    },
+    {
+      "type": "team",
+      "name": "Team Canada",
+      "official_name": "Team Canada",
+      "slug": "team-canada-relay",
+      "abbreviation": "CA",
+      "_country_abr": "CA"
     }
   ]
 }

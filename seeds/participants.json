@@ -1,0 +1,82 @@
+{
+  "participants": [
+    {
+      "_event_id": 1,
+      "_entity_id": 1,
+      "role": "home",
+      "stage_position": 1
+    },
+    {
+      "_event_id": 1,
+      "_entity_id": 2,
+      "role": "away",
+      "stage_position": 2
+    },
+    {
+      "_event_id": 2,
+      "_entity_id": 3,
+      "role": "home",
+      "stage_position": 1
+    },
+    {
+      "_event_id": 2,
+      "_entity_id": 4,
+      "role": "away",
+      "stage_position": 2
+    },
+    {
+      "_event_id": 3,
+      "_entity_id": 5,
+      "role": "entry",
+      "stage_position": null
+    },
+    {
+      "_event_id": 4,
+      "_entity_id": 6,
+      "role": "entry",
+      "stage_position": 1
+    },
+    {
+      "_event_id": 4,
+      "_entity_id": 7,
+      "role": "entry",
+      "stage_position": 2
+    },
+    {
+      "_event_id": 5,
+      "_entity_id": 8,
+      "role": "entry",
+      "stage_position": 1
+    },
+    {
+      "_event_id": 5,
+      "_entity_id": 9,
+      "role": "entry",
+      "stage_position": 2
+    },
+    {
+      "_event_id": 6,
+      "_entity_id": 10,
+      "role": "entry",
+      "stage_position": 1
+    },
+    {
+      "_event_id": 6,
+      "_entity_id": 11,
+      "role": "entry",
+      "stage_position": 2
+    },
+    {
+      "_event_id": 7,
+      "_entity_id": 12,
+      "role": "entry",
+      "stage_position": null
+    },
+    {
+      "_event_id": 7,
+      "_entity_id": 13,
+      "role": "entry",
+      "stage_position": null
+    }
+  ]
+}
