@@ -34,6 +34,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS competitions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
                 sport_type TEXT NOT NULL,
                 participation_type TEXT NOT NULL CHECK(participation_type IN ('team', 'individual', 'relay'))
             )
