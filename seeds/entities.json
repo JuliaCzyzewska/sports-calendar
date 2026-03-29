@@ -6,15 +6,15 @@
       "official_name": "Arsenal WFC",
       "slug": "arsenal-wfc",
       "abbreviation": "ARS",
-      "_country_abr": "GB"
+      "_country_id": 27
     },
     {
-    "type": "team",
-    "name": "FC Barcelona Femení",
-    "official_name": "Futbol Club Barcelona Femení",
-    "slug": "fc-barcelona-femeni",
-    "abbreviation": "BAR",
-    "_country_abr": "ES"
+        "type": "team",
+        "name": "FC Barcelona Femení",
+        "official_name": "Futbol Club Barcelona Femení",
+        "slug": "fc-barcelona-femeni",
+        "abbreviation": "BAR",
+        "_country_id": 5
     },
     {
       "type": "team",
@@ -22,15 +22,15 @@
       "official_name": "Argentina National Team",
       "slug": "argentina-national-team",
       "abbreviation": "ARG",
-      "_country_abr": "AR"
+      "_country_id": 25
     },
     {
-    "type": "team",
-    "name": "France National Team",
-    "official_name": "France National Football Team",
-    "slug": "france-national-team",
-    "abbreviation": "FRA",
-    "_country_abr": "FR"
+        "type": "team",
+        "name": "France National Team",
+        "official_name": "France National Football Team",
+        "slug": "france-national-team",
+        "abbreviation": "FRA",
+        "_country_id": 3
     },
     {
       "type": "athlete",
@@ -38,7 +38,7 @@
       "official_name": "Sisay Lemma",
       "slug": "sisay-lemma",
       "abbreviation": null,
-      "_country_abr": "ET"
+      "_country_id": 24
     },
     {
       "type": "athlete",
@@ -46,7 +46,7 @@
       "official_name": "Marcell Jacobs",
       "slug": "marcell-jacobs",
       "abbreviation": null,
-      "_country_abr": "IT"
+      "_country_id": 4
     },
     {
       "type": "athlete",
@@ -54,7 +54,7 @@
       "official_name": "Noah Lyles",
       "slug": "noah-lyles",
       "abbreviation": null,
-      "_country_abr": "US"
+      "_country_id": 21
     },
     {
       "type": "athlete",
@@ -62,7 +62,7 @@
       "official_name": "Kaori Sakamoto",
       "slug": "kaori-sakamoto",
       "abbreviation": null,
-      "_country_abr": "JP"
+      "_country_id": 28
     },
     {
       "type": "athlete",
@@ -70,7 +70,7 @@
       "official_name": "Mone Chiba",
       "slug": "mone-chiba",
       "abbreviation": null,
-      "_country_abr": "JP"
+      "_country_id": 28
     },
     {
       "type": "team",
@@ -78,7 +78,7 @@
       "official_name": "Minerva Fabienne Hase & Nikita Volodin",
       "slug": "hase-volodin-pairs",
       "abbreviation": null,
-      "_country_abr": "DE"
+      "_country_id": 2
     },
     {
       "type": "team",
@@ -86,7 +86,7 @@
       "official_name": "Anastasiia Metelkina & Luka Berulava",
       "slug": "metelkina-berulava-pairs",
       "abbreviation": null,
-      "_country_abr": "GEO"
+      "_country_id": 26
     },
     {
       "type": "team",
@@ -94,7 +94,7 @@
       "official_name": "Team USA",
       "slug": "team-usa-relay",
       "abbreviation": "USA",
-      "_country_abr": "US"
+      "_country_id": 21
     },
     {
       "type": "team",
@@ -102,7 +102,7 @@
       "official_name": "Team Canada",
       "slug": "team-canada-relay",
       "abbreviation": "CA",
-      "_country_abr": "CA"
+      "_country_id": 22
     }
   ]
 }

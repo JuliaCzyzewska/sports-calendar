@@ -39,17 +39,17 @@ def populate_competitions(cur):
 def populate_venues(cur):
     data = load_table_data_from_json("venues")
     cur.executemany("""
-        INSERT OR IGNORE INTO venues (name, city, _country_abr)
+        INSERT OR IGNORE INTO venues (name, city, _country_id)
         VALUES (?, ?, ?)
-    """, [(d.get("name"), d.get("city"), d.get("_country_abr")) for d in data])
+    """, [(d.get("name"), d.get("city"), d.get("_country_id")) for d in data])
 
 
 def populate_entites(cur):
     data = load_table_data_from_json("entities")
     cur.executemany("""
-        INSERT OR IGNORE INTO entities (type, name, official_name, slug, abbreviation, _country_abr)
+        INSERT OR IGNORE INTO entities (type, name, official_name, slug, abbreviation, _country_id)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, [(d.get("type"), d.get("name"), d.get("official_name"), d.get("slug"), d.get("abbreviation"), d.get("_country_abr")) for d in data])
+    """, [(d.get("type"), d.get("name"), d.get("official_name"), d.get("slug"), d.get("abbreviation"), d.get("_country_id")) for d in data])
 
 
 def populate_stages(cur):

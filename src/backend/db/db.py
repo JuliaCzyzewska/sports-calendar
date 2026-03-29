@@ -59,9 +59,9 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, 
                 city NAME,
-                _country_abr INTEGER NOT NULL,
+                _country_id INTEGER NOT NULL,
                 
-                FOREIGN KEY (_country_abr) REFERENCES countries(abbreviation)
+                FOREIGN KEY (_country_id) REFERENCES countries(id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT  
             )
@@ -69,7 +69,8 @@ def init_db():
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS countries (
-                abbreviation TEXT PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                abbreviation TEXT NOT NULL UNIQUE,
                 name TEXT NOT NULL
             )
             """)
@@ -83,9 +84,9 @@ def init_db():
                 official_name TEXT NOT NULL,
                 slug TEXT NOT NULL UNIQUE,
                 abbreviation TEXT,      -- null for athelete
-                _country_abr INTEGER NOT NULL,
+                _country_id INTEGER NOT NULL,
                         
-                FOREIGN KEY (_country_abr) REFERENCES countries(abbreviation)
+                FOREIGN KEY (_country_id) REFERENCES countries(id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT           
             )
@@ -156,16 +157,11 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS event_incidents (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                _event_id INTEGER NOT NULL,
                 _participant_id INTEGER NOT NULL,   -- team or athlete
                 _entity_id INTEGER,                 -- specific athlete
                 incident_type TEXT NOT NULL,        -- yellow card, red_card etc
                 minute INTEGER,                     -- time during event when incident happened
                         
-                FOREIGN KEY (_event_id) REFERENCES events(id)
-                    ON UPDATE CASCADE
-                    ON DELETE RESTRICT
-
                 FOREIGN KEY (_participant_id) REFERENCES participants(id)
                     ON UPDATE CASCADE
                         

@@ -3,27 +3,27 @@
     {
       "name": "Ullevaal Stadion",
       "city": "Oslo",
-      "country_abbreviation": "NO"
+      "_country_id": 10
     },
     {
       "name": "Lusail Stadium",
       "city": "Lusail",
-      "country_abbreviation": "QA"
+      "_country_id": 23
     },
     {
       "name": "Boylston Street Finish",
       "city": "Boston",
-      "country_abbreviation": "US"
+      "_country_id": 21
     },
     {
       "name": "Stade de France",
       "city": "Saint-Denis",
-      "country_abbreviation": "FR"
+      "_country_id": 3
     },
     {
       "name": "O2 Arena",
       "city": "Prague",
-      "country_abbreviation": "CZ"
+      "_country_id": 15
     }
   ]
 }

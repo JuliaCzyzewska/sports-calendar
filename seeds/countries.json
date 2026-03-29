@@ -23,8 +23,10 @@
     { "abbreviation": "US", "name": "United States" },
     { "abbreviation": "CA", "name": "Canada" },
     { "abbreviation": "QA", "name": "Qatar" },
-    { "abbreviation": "ETH", "name": "Ethiopia" },
-    { "abbreviation": "ARG", "name": "Argentina" },
-    { "abbreviation": "GEO", "name": "Georgia" }
+    { "abbreviation": "ET", "name": "Ethiopia" },
+    { "abbreviation": "AR", "name": "Argentina" },
+    { "abbreviation": "GE", "name": "Georgia" },
+    { "abbreviation": "GB", "name": "United Kingdom" },
+    { "abbreviation": "JP", "name": "Japan" }
   ]
 }
