@@ -1,0 +1,29 @@
+{
+  "venues": [
+    {
+      "name": "Ullevaal Stadion",
+      "city": "Oslo",
+      "country_abbreviation": "NO"
+    },
+    {
+    "name": "Lusail Stadium",
+    "city": "Lusail",
+    "country_abbreviation": "QA"
+    },
+    {
+      "name": "Boylston Street Finish",
+      "city": "Boston",
+      "country_abbreviation": "US"
+    },
+    {
+      "name": "Stade de France",
+      "city": "Saint-Denis",
+      "country_abbreviation": "FR"
+    },
+    {
+      "name": "O2 Arena",
+      "city": "Prague",
+      "country_abbreviation": "CZ"
+    }
+  ]
+}

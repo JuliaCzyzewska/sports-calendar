@@ -1,0 +1,68 @@
+{
+  "entities": [
+    {
+      "type": "team",
+      "name": "Arsenal WFC",
+      "official_name": "Arsenal WFC",
+      "slug": "arsenal-wfc",
+      "abbreviation": "ARS",
+      "_country_abr": "GB"
+    },
+    {
+      "type": "team",
+      "name": "Argentina National Team",
+      "official_name": "Argentina National Team",
+      "slug": "argentina-national-team",
+      "abbreviation": "ARG",
+      "_country_abr": "AR"
+    },
+    {
+      "type": "team",
+      "name": "Spain National Team",
+      "official_name": "Spain National Team",
+      "slug": "spain-national-team",
+      "abbreviation": "ESP",
+      "_country_abr": "ES"
+    },
+    {
+      "type": "athlete",
+      "name": "Sisay Lemma",
+      "official_name": "Sisay Lemma",
+      "slug": "sisay-lemma",
+      "abbreviation": null,
+      "_country_abr": "ET"
+    },
+    {
+      "type": "athlete",
+      "name": "Marcell Jacobs",
+      "official_name": "Marcell Jacobs",
+      "slug": "marcell-jacobs",
+      "abbreviation": null,
+      "_country_abr": "IT"
+    },
+    {
+      "type": "athlete",
+      "name": "Kaori Sakamoto",
+      "official_name": "Kaori Sakamoto",
+      "slug": "kaori-sakamoto",
+      "abbreviation": null,
+      "_country_abr": "JP"
+    },
+    {
+      "type": "team",
+      "name": "Minerva Fabienne Hase & Nikita Volodin",
+      "official_name": "Minerva Fabienne Hase & Nikita Volodin",
+      "slug": "hase-volodin-pairs",
+      "abbreviation": null,
+      "_country_abr": "DE"
+    },
+    {
+      "type": "team",
+      "name": "Team USA",
+      "official_name": "Team USA",
+      "slug": "team-usa-relay",
+      "abbreviation": "USA",
+      "_country_abr": "US"
+    }
+  ]
+}

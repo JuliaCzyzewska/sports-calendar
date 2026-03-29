@@ -1,0 +1,39 @@
+{
+  "stages": [
+    {
+      "_competition_slug": "uefa-womens-champions-league",
+      "name": "Final",
+      "ordering": 5
+    },
+    {
+      "_competition_slug": "fifa-world-cup",
+      "name": "Round of 16",
+      "ordering": 2
+    },
+    {
+      "_competition_slug": "boston-marathon",
+      "name": "Full Marathon",
+      "ordering": 1
+    },
+    {
+      "_competition_slug": "olympic-100m-sprint-men",
+      "name": "Final",
+      "ordering": 3
+    },
+    {
+      "_competition_slug": "world-figure-skating-championships-individual-woman",
+      "name": "Short Program",
+      "ordering": 1
+    },
+    {
+      "_competition_slug": "world-figure-skating-championships-pairs",
+      "name": "Free Skate",
+      "ordering": 1
+    },
+    {
+      "_competition_slug": "olympic-4x100m-relay-mixed",
+      "name": "Final",
+      "ordering": 3
+    }
+  ]
+}

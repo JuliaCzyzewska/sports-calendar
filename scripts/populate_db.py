@@ -44,10 +44,21 @@ def populate_venues(cur):
 
 
 def populate_entites(cur):
-    pass
+    data = load_table_data_from_json("entities")
+    cur.executemany("""
+        INSERT OR IGNORE INTO entities (type, name, official_name, slug, abbreviation, _country_abr)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, [(d.get("type"), d.get("name"), d.get("official_name"), d.get("slug"), d.get("abbreviation"), d.get("_country_abr")) for d in data])
+
+
+
 
 def populate_stages(cur):
-    pass
+    data = load_table_data_from_json("stages")
+    cur.executemany("""
+        INSERT OR IGNORE INTO stages (_competition_slug, name, ordering)
+        VALUES (?, ?, ?)
+    """, [(d.get("_competition_slug"), d.get("name"), d.get("ordering")) for d in data])
 
 
 def populate_db():
@@ -64,6 +75,8 @@ def populate_db():
         populate_entites(cur)
         populate_stages(cur)
         conn.commit()
+
+        
 
 
 

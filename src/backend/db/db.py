@@ -82,7 +82,7 @@ def init_db():
                 name TEXT NOT NULL,
                 official_name TEXT NOT NULL,
                 slug TEXT NOT NULL UNIQUE,
-                abbreviation TEXT,
+                abbreviation TEXT,      -- null for athelete
                 _country_abr INTEGER NOT NULL,
                         
                 FOREIGN KEY (_country_abr) REFERENCES countries(abbreviation)
