@@ -130,11 +130,15 @@ def init_db():
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS event_results (
-                _event_id INTEGER NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,        
+                _event_id INTEGER NOT NULL,
+                category TEXT,          -- NULL if it does not have categories, men, women -60kg, etc
                 _entity_id INTEGER, 
                 outcome_type TEXT DEFAULT 'win' CHECK (outcome_type IN('win', 'draw', 'canceled', 'abandoned')),
                 message TEXT,
                 
+                UNIQUE (_event_id, category),     -- one result per category per event
+                        
                 FOREIGN KEY (_event_id) REFERENCES events(id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT
