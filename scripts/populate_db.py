@@ -4,6 +4,10 @@ import json
 data_files_paths = {
     "countries": "seeds/countries.json",
     "competitions": "seeds/competitions.json",
+    "venues": "seeds/venues.json",
+    "entities": "seeds/entities.json",
+    "stages": "seeds/stages.json",
+   
 }
 
 def load_table_data_from_json(table_name: str):
@@ -26,9 +30,24 @@ def populate_countries(cur):
 def populate_competitions(cur):
     data = load_table_data_from_json("competitions")
     cur.executemany("""
-        INSERT OR IGNORE INTO competitions (name, slug, sport_type, participation_type)
+        INSERT OR IGNORE INTO competitions (slug, name, sport_type, participation_type)
         VALUES (?, ?, ?, ?)
-    """, [(d.get("name"), d.get("slug"), d.get("sport_type"), d.get("participation_type")) for d in data])
+    """, [(d.get("slug"), d.get("name"), d.get("sport_type"), d.get("participation_type")) for d in data])
+
+
+def populate_venues(cur):
+    data = load_table_data_from_json("venues")
+    cur.executemany("""
+        INSERT OR IGNORE INTO venues (name, city, _country_abr)
+        VALUES (?, ?, ?)
+    """, [(d.get("name"), d.get("city"), d.get("_country_abr")) for d in data])
+
+
+def populate_entites(cur):
+    pass
+
+def populate_stages(cur):
+    pass
 
 
 def populate_db():
@@ -38,6 +57,12 @@ def populate_db():
         # stage 1 - competitions, countries
         populate_countries(cur)
         populate_competitions(cur)
+        conn.commit()
+
+        # stage 2 - venues, entities, stages
+        populate_venues(cur)
+        populate_entites(cur)
+        populate_stages(cur)
         conn.commit()
 
 

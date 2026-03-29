@@ -15,7 +15,7 @@ def init_db():
                 time_venue_UTC TEXT,          -- HH:MM:SS 
                 _stage_id INTEGER,
                 _venue_id INTEGER,
-                _competition_id INTEGER NOT NULL,
+                _competition_slug TEXT NOT NULL,
                 
                 FOREIGN KEY (_stage_id) REFERENCES stages(id)
                     ON UPDATE CASCADE
@@ -23,7 +23,7 @@ def init_db():
                 FOREIGN KEY (_venue_id) REFERENCES venues(id)
                     ON UPDATE CASCADE
                         
-                FOREIGN KEY (_competition_id) REFERENCES competitions(id)
+                FOREIGN KEY (_competition_slug) REFERENCES competitions(slug)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT      -- dont let competition be deleted if its connected to event
             )
@@ -32,9 +32,8 @@ def init_db():
               
             cur.execute("""
             CREATE TABLE IF NOT EXISTS competitions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                slug TEXT NOT NULL PRIMARY KEY,
                 name TEXT NOT NULL,
-                slug TEXT NOT NULL UNIQUE,
                 sport_type TEXT NOT NULL,
                 participation_type TEXT NOT NULL CHECK(participation_type IN ('team', 'individual', 'relay'))
             )
@@ -43,13 +42,13 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS stages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                _competition_id INTEGER NOT NULL,
+                _competition_slug TEXT NOT NULL,
                 name TEXT,
                 ordering INTEGER CHECK(ordering > 0),
                 
-                UNIQUE (_competition_id, name),
+                UNIQUE (_competition_slug, name),
                 
-                FOREIGN KEY (_competition_id) REFERENCES competitions(id)
+                FOREIGN KEY (_competition_slug) REFERENCES competitions(slug)
                     ON UPDATE CASCADE
                     ON DELETE CASCADE 
             )
@@ -60,9 +59,9 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, 
                 city NAME,
-                _country_id INTEGER NOT NULL,
+                _country_abr INTEGER NOT NULL,
                 
-                FOREIGN KEY (_country_id) REFERENCES countries(id)
+                FOREIGN KEY (_country_abr) REFERENCES countries(abbreviation)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT  
             )
@@ -71,7 +70,7 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS countries (
                 abbreviation TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
+                name TEXT NOT NULL
             )
             """)
 
@@ -84,9 +83,9 @@ def init_db():
                 official_name TEXT NOT NULL,
                 slug TEXT NOT NULL UNIQUE,
                 abbreviation TEXT,
-                _country_id INTEGER NOT NULL,
+                _country_abr INTEGER NOT NULL,
                         
-                FOREIGN KEY (_country_id) REFERENCES countries(id)
+                FOREIGN KEY (_country_abr) REFERENCES countries(abbreviation)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT           
             )

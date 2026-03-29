@@ -21,6 +21,7 @@
     { "abbreviation": "UK", "name": "United Kingdom" },
     { "abbreviation": "IE", "name": "Ireland" },
     { "abbreviation": "US", "name": "United States" },
-    { "abbreviation": "CA", "name": "Canada" }
+    { "abbreviation": "CA", "name": "Canada" },
+    { "abbreviation": "QA", "name": "Qatar" }
   ]
 }
