@@ -70,9 +70,8 @@ def init_db():
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS countries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                abbreviation TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
-                abbreviation TEXT NOT NULL UNIQUE
             )
             """)
 

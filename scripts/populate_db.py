@@ -19,9 +19,9 @@ def load_table_data_from_json(table_name: str):
 def populate_countries(cur):
     data = load_table_data_from_json("countries")
     cur.executemany("""
-        INSERT OR IGNORE INTO countries (name, abbreviation)
+        INSERT OR IGNORE INTO countries (abbreviation, name)
         VALUES (?, ?)
-    """, [(d.get("name"), d.get("abbreviation")) for d in data])
+    """, [(d.get("abbreviation"), d.get("name")) for d in data])
 
 def populate_competitions(cur):
     data = load_table_data_from_json("competitions")
@@ -35,7 +35,7 @@ def populate_db():
     with sqlite3.connect("data/calendar_data.db") as conn:
         cur = conn.cursor()
 
-        # stage 1
+        # stage 1 - competitions, countries
         populate_countries(cur)
         populate_competitions(cur)
         conn.commit()
