@@ -1,0 +1,26 @@
+{
+  "countries": [
+    { "name": "Poland", "abbreviation": "PL" },
+    { "name": "Germany", "abbreviation": "DE" },
+    { "name": "France", "abbreviation": "FR" },
+    { "name": "Italy", "abbreviation": "IT" },
+    { "name": "Spain", "abbreviation": "ES" },
+    { "name": "Portugal", "abbreviation": "PT" },
+    { "name": "Netherlands", "abbreviation": "NL" },
+    { "name": "Belgium", "abbreviation": "BE" },
+    { "name": "Sweden", "abbreviation": "SE" },
+    { "name": "Norway", "abbreviation": "NO" },
+    { "name": "Denmark", "abbreviation": "DK" },
+    { "name": "Finland", "abbreviation": "FI" },
+    { "name": "Switzerland", "abbreviation": "CH" },
+    { "name": "Austria", "abbreviation": "AT" },
+    { "name": "Czech Republic", "abbreviation": "CZ" },
+    { "name": "Slovakia", "abbreviation": "SK" },
+    { "name": "Hungary", "abbreviation": "HU" },
+    { "name": "Greece", "abbreviation": "GR" },
+    { "name": "United Kingdom", "abbreviation": "UK" },
+    { "name": "Ireland", "abbreviation": "IE" },
+    { "name": "United States", "abbreviation": "US" },
+    { "name": "Canada", "abbreviation": "CA" }
+  ]
+}
