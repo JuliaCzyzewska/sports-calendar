@@ -19,13 +19,15 @@ def init_db():
                 
                 FOREIGN KEY (_stage_id) REFERENCES stages(id)
                     ON UPDATE CASCADE
+                    ON DELETE RESTRICT
                 
                 FOREIGN KEY (_venue_id) REFERENCES venues(id)
                     ON UPDATE CASCADE
+                    ON DELETE RESTRICT
                         
                 FOREIGN KEY (_competition_slug) REFERENCES competitions(slug)
                     ON UPDATE CASCADE
-                    ON DELETE RESTRICT      -- dont let competition be deleted if its connected to event
+                    ON DELETE RESTRICT
             )
             """)
 
@@ -58,7 +60,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS venues (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, 
-                city NAME,
+                city TEXT,
                 _country_id INTEGER NOT NULL,
                 
                 FOREIGN KEY (_country_id) REFERENCES countries(id)
@@ -105,6 +107,7 @@ def init_db():
                 
                 FOREIGN KEY (_event_id) REFERENCES events(id)
                     ON UPDATE CASCADE
+                    ON DELETE CASCADE   -- delete participants if event is deleted
                 
                 FOREIGN KEY (_entity_id) REFERENCES entities(id)
                     ON UPDATE CASCADE
@@ -132,11 +135,11 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,        
                 _event_id INTEGER NOT NULL,
                 category TEXT,          -- NULL if it does not have categories, men, women -60kg, etc
-                _entity_id INTEGER, 
+                _entity_id INTEGER,     -- NULL if result is not win
                 outcome_type TEXT DEFAULT 'win' CHECK (outcome_type IN('win', 'draw', 'canceled', 'abandoned')),
                 message TEXT,
                 
-                UNIQUE (_event_id, category),     -- one result per category per event
+                UNIQUE (_event_id, category),     -- one result per category per event; 
                         
                 FOREIGN KEY (_event_id) REFERENCES events(id)
                     ON UPDATE CASCADE
@@ -153,6 +156,13 @@ def init_db():
             )
             """)
 
+        # separate index to enforce uniquness when category is NULL
+            cur.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS one_null_category_per_event
+                ON event_results (_event_id)
+                WHERE category IS NULL
+            """)
+
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS event_incidents (
@@ -164,6 +174,7 @@ def init_db():
                         
                 FOREIGN KEY (_participant_id) REFERENCES participants(id)
                     ON UPDATE CASCADE
+                    ON DELETE RESTRICT 
                         
                 FOREIGN KEY (_entity_id) REFERENCES entities(id)
                     ON UPDATE CASCADE
