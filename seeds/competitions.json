@@ -1,0 +1,46 @@
+{
+  "competitions": [
+    {
+      "name": "UEFA Women's Champions League",
+      "slug": "uefa-womens-champions-league",
+      "sport_type": "football",
+      "participation_type": "team"
+    },
+    {
+      "name": "FIFA World Cup",
+      "slug": "fifa-world-cup",
+      "sport_type": "football",
+      "participation_type": "team"
+    },
+    {
+      "name": "Boston Marathon",
+      "slug": "boston-marathon",
+      "sport_type": "running",
+      "participation_type": "individual"
+    },
+    {
+      "name": "Olympic 100m Sprint Men",
+      "slug": "olympic-100m-sprint-men",
+      "sport_type": "running",
+      "participation_type": "individual"
+    },
+    {
+      "name": "Polish Figure Skating Championships Individual Woman ",
+      "slug": "polish-figure-skating-championships-individual-woman",
+      "sport_type": "figure skating",
+      "participation_type": "individual"
+    },
+    {
+      "name": "Polish Figure Skating Championships Pairs",
+      "slug": "polish-figure-skating-championships-pairs",
+      "sport_type": "figure skating",
+      "participation_type": "team"
+    },
+    {
+      "name": "Olympic 4x100m Relay Mixed",
+      "slug": "olympic-4x100m-relay-mixed",
+      "sport_type": "running",
+      "participation_type": "relay"
+    }
+  ]
+}

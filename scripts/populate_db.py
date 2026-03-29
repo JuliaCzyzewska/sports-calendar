@@ -2,7 +2,8 @@ import sqlite3
 import json
 
 data_files_paths = {
-    "countries": "seeds/countries.json"
+    "countries": "seeds/countries.json",
+    "competitions": "seeds/competitions.json",
 }
 
 def load_table_data_from_json(table_name: str):
@@ -22,12 +23,21 @@ def populate_countries(cur):
         VALUES (?, ?)
     """, [(d.get("name"), d.get("abbreviation")) for d in data])
 
+def populate_competitions(cur):
+    data = load_table_data_from_json("competitions")
+    cur.executemany("""
+        INSERT OR IGNORE INTO competitions (name, slug, sport_type, participation_type)
+        VALUES (?, ?, ?, ?)
+    """, [(d.get("name"), d.get("slug"), d.get("sport_type"), d.get("participation_type")) for d in data])
 
 
 def populate_db():
     with sqlite3.connect("data/calendar_data.db") as conn:
         cur = conn.cursor()
+
+        # stage 1
         populate_countries(cur)
+        populate_competitions(cur)
         conn.commit()
 
 
