@@ -113,6 +113,7 @@ def populate_event_results(cur):
 def populate_db():
     with sqlite3.connect("data/calendar_data.db") as conn:
         cur = conn.cursor()
+        conn.execute("PRAGMA foreign_keys = ON")
 
         # stage 1 - competitions, countries
         populate_countries(cur)
