@@ -1,0 +1,68 @@
+{
+  "participant_scores": [
+    {
+      "_participant_id": 1,
+      "score_value": 1,
+      "score_label": "goals"
+    },
+    {
+      "_participant_id": 2,
+      "score_value": 0,
+      "score_label": "goals"
+    },
+
+    {
+      "_participant_id": 3,
+      "score_value": 3,
+      "score_label": "goals"
+    },
+    {
+      "_participant_id": 4,
+      "score_value": 3,
+      "score_label": "goals"
+    },
+    {
+      "_participant_id": 3,
+      "score_value": 4,
+      "score_label": "penalties"
+    },
+    {
+      "_participant_id": 4,
+      "score_value": 2,
+      "score_label": "penalties"
+    },
+
+    {
+      "_participant_id": 6,
+      "score_value": 9.40,
+      "score_label": "time_seconds"
+    },
+    {
+      "_participant_id": 7,
+      "score_value": 9.79,
+      "score_label": "time_seconds"
+    },
+
+    {
+      "_participant_id": 8,
+      "score_value": 222.96,
+      "score_label": "points"
+    },
+    {
+      "_participant_id": 9,
+      "score_value": 215.24,
+      "score_label": "points"
+    },
+
+    {
+      "_participant_id": 10,
+      "score_value": 219.08,
+      "score_label": "points"
+    },
+    {
+      "_participant_id": 11,
+      "score_value": 210.00,
+      "score_label": "points"
+    }
+  ]
+}

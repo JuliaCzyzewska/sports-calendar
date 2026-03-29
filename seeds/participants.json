@@ -34,13 +34,13 @@
       "_event_id": 4,
       "_entity_id": 6,
       "role": "entry",
-      "stage_position": 1
+      "stage_position": 2
     },
     {
       "_event_id": 4,
       "_entity_id": 7,
       "role": "entry",
-      "stage_position": 2
+      "stage_position": 1
     },
     {
       "_event_id": 5,

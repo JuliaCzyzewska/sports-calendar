@@ -116,7 +116,7 @@ def init_db():
             """)
 
             cur.execute("""
-            CREATE TABLE IF NOT EXISTS participant_score (
+            CREATE TABLE IF NOT EXISTS participant_scores (
                 _participant_id INTEGER NOT NULL,
                 score_value NUMERIC NOT NULL,
                 score_label TEXT NOT NULL,    -- points, goals, etc
@@ -170,7 +170,7 @@ def init_db():
                 _participant_id INTEGER NOT NULL,   -- team or athlete
                 _entity_id INTEGER,                 -- specific athlete
                 incident_type TEXT NOT NULL,        -- yellow card, red_card etc
-                minute INTEGER,                     -- time during event when incident happened
+                minute NUMERIC,                     -- time during event when incident happened
                         
                 FOREIGN KEY (_participant_id) REFERENCES participants(id)
                     ON UPDATE CASCADE

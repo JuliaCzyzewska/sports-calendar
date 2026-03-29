@@ -1,0 +1,98 @@
+{
+  "event_incidents": [
+    
+    {
+      "_participant_id": 1,
+      "_entity_id": 14,
+      "incident_type": "yellow_card",
+      "minute": 32
+    },
+    {
+      "_participant_id": 2,
+      "_entity_id": 15,
+      "incident_type": "yellow_card",
+      "minute": 57
+    },
+    {
+      "_participant_id": 1,
+      "_entity_id": null,
+      "incident_type": "goal",
+      "minute": 74
+    },
+
+    
+    {
+      "_participant_id": 3,
+      "_entity_id": 16,
+      "incident_type": "goal",
+      "minute": 23
+    },
+    {
+      "_participant_id": 4,
+      "_entity_id": 17,
+      "incident_type": "goal",
+      "minute": 80
+    },
+    {
+      "_participant_id": 4,
+      "_entity_id": 17,
+      "incident_type": "goal",
+      "minute": 81
+    },
+    {
+      "_participant_id": 3,
+      "_entity_id": null,
+      "incident_type": "penalty_scored",
+      "minute": 120
+    },
+    {
+      "_participant_id": 4,
+      "_entity_id": null,
+      "incident_type": "penalty_missed",
+      "minute": 120
+    },
+
+    
+    {
+      "_participant_id": 6,
+      "_entity_id": null,
+      "incident_type": "reaction_time",
+      "minute": 0.132
+    },
+    {
+      "_participant_id": 7,
+      "_entity_id": null,
+      "incident_type": "reaction_time",
+      "minute": 0.132
+    },
+
+    
+    {
+      "_participant_id": 8,
+      "_entity_id": null,
+      "incident_type": "fall",
+      "minute": null
+    },
+    {
+      "_participant_id": 9,
+      "_entity_id": null,
+      "incident_type": "underrotation",
+      "minute": null
+    },
+
+    
+    {
+      "_participant_id": 10,
+      "_entity_id": null,
+      "incident_type": "clean_program",
+      "minute": null
+    },
+    {
+      "_participant_id": 11,
+      "_entity_id": null,
+      "incident_type": "fall",
+      "minute": null
+    }
+
+  ]
+}

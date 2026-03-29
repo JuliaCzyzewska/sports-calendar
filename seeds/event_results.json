@@ -1,0 +1,39 @@
+{
+  "event_results": [
+    {
+      "_event_id": 1,
+      "category": null,
+      "_entity_id": 1,
+      "outcome_type": "win",
+      "message": "Arsenal WFC defeated FC Barcelona Femení 1-0 in the final"
+    },
+    {
+      "_event_id": 2,
+      "category": null,
+      "_entity_id": 3,
+      "outcome_type": "win",
+      "message": "Argentina defeated France on penalties (4-2) after 3-3 draw"
+    },
+    {
+      "_event_id": 4,
+      "category": null,
+      "_entity_id": 7,
+      "outcome_type": "win",
+      "message": "Noah Lyles won the 100m final with a time of 9.40 seconds"
+    },
+    {
+      "_event_id": 5,
+      "category": "women",
+      "_entity_id": 8,
+      "outcome_type": "win",
+      "message": "Kaori Sakamoto won the women's event"
+    },
+    {
+      "_event_id": 6,
+      "category": null,
+      "_entity_id": 10,
+      "outcome_type": "win",
+      "message": "Hase and Volodin won the pairs free skate"
+    }
+  ]
+}

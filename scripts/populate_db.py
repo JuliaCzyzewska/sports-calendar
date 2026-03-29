@@ -9,6 +9,9 @@ data_files_paths = {
     "stages": "seeds/stages.json",
     "events": "seeds/events.json",
     "participants": "seeds/participants.json",
+    "event_incidents": "seeds/event_incidents.json",
+    "participant_scores": "seeds/participant_scores.json",
+    "event_results": "seeds/event_results.json",
 }
 
 def load_table_data_from_json(table_name: str):
@@ -77,6 +80,33 @@ def populate_participants(cur):
     """, [(d.get("_event_id"), d.get("_entity_id"), d.get("role"), d.get("stage_position")) for d in data])
 
 
+def populate_event_incidents(cur):
+    data = load_table_data_from_json("event_incidents")
+    cur.executemany("""
+        INSERT OR IGNORE INTO event_incidents (_participant_id, _entity_id, incident_type, minute)
+        VALUES (?, ?, ?, ?)
+    """, [(d.get("_participant_id"), d.get("_entity_id"), d.get("incident_type"), d.get("minute")) for d in data])
+
+
+
+def populate_participant_scores(cur):
+    data = load_table_data_from_json("participant_scores")
+    cur.executemany("""
+        INSERT OR IGNORE INTO participant_scores (_participant_id, score_value, score_label)
+        VALUES (?, ?, ?)
+    """, [(d.get("_participant_id"), d.get("score_value"), d.get("score_label")) for d in data])
+
+
+
+def populate_event_results(cur):
+    data = load_table_data_from_json("event_results")
+    cur.executemany("""
+        INSERT OR IGNORE INTO event_results (_event_id, category, _entity_id, outcome_type, message)
+        VALUES (?, ?, ?, ?, ?)
+    """, [(d.get("_event_id"), d.get("category"), d.get("_entity_id"), d.get("outcome_type"), d.get("message")) for d in data])
+    
+
+
 
 
 
@@ -95,17 +125,20 @@ def populate_db():
         populate_stages(cur)
         conn.commit()
 
-        # stage 3 - event
+        # stage 3 - events
         populate_events(cur)
         conn.commit()
 
-        # stage 4 - participant
+        # stage 4 - participants
         populate_participants(cur)
         conn.commit()
 
 
-        # stage 5 - even incident, participant score, event score
-
+        # stage 5 - event_incidents, participant_scores, event_results
+        populate_event_incidents(cur)
+        populate_participant_scores(cur)
+        populate_event_results(cur)
+        conn.commit()
 
 
 

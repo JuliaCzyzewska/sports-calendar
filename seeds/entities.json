@@ -103,6 +103,38 @@
       "slug": "team-canada-relay",
       "abbreviation": "CA",
       "_country_id": 22
+    },
+    {
+      "type": "athlete",
+      "name": "Kim Little",
+      "official_name": "Kim Little",
+      "slug": "kim-little",
+      "abbreviation": null,
+      "_country_id": 27
+    },
+    {
+      "type": "athlete",
+      "name": "Alexia Putellas",
+      "official_name": "Alexia Putellas",
+      "slug": "alexia-putellas",
+      "abbreviation": null,
+      "_country_id": 5
+    },
+    {
+      "type": "athlete",
+      "name": "Lionel Messi",
+      "official_name": "Lionel Messi",
+      "slug": "lionel-messi",
+      "abbreviation": null,
+      "_country_id": 25
+    },
+    {
+      "type": "athlete",
+      "name": "Kylian Mbappé",
+      "official_name": "Kylian Mbappe",
+      "slug": "kylian-mbappe",
+      "abbreviation": null,
+      "_country_id": 3
     }
   ]
 }
