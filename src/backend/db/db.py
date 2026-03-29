@@ -29,8 +29,6 @@ def init_db():
             )
             """)
 
-
-
               
             cur.execute("""
             CREATE TABLE IF NOT EXISTS competitions (
@@ -48,6 +46,8 @@ def init_db():
                 name TEXT,
                 ordering INTEGER CHECK(ordering > 0),
                 
+                UNIQUE (_competition_id, name),
+                
                 FOREIGN KEY (_competition_id) REFERENCES competitions(id)
                     ON UPDATE CASCADE
                     ON DELETE CASCADE 
@@ -63,8 +63,7 @@ def init_db():
                 
                 FOREIGN KEY (_country_id) REFERENCES countries(id)
                     ON UPDATE CASCADE
-                    ON DELETE RESTRICT 
-                        
+                    ON DELETE RESTRICT  
             )
             """)
 
@@ -72,7 +71,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS countries (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                abbreviation TEXT NOT NULL
+                abbreviation TEXT NOT NULL UNIQUE
             )
             """)
 
@@ -80,10 +79,10 @@ def init_db():
             cur.execute("""
             CREATE TABLE IF NOT EXISTS entities (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT NOT NULL CHECK(type IN ('team', 'athelete')),
+                type TEXT NOT NULL CHECK(type IN ('team', 'athlete')),
                 name TEXT NOT NULL,
                 official_name TEXT NOT NULL,
-                slug TEXT NOT NULL,
+                slug TEXT NOT NULL UNIQUE,
                 abbreviation TEXT,
                 _country_id INTEGER NOT NULL,
                         
@@ -95,33 +94,35 @@ def init_db():
 
 
             cur.execute("""
-            CREATE TABLE IF NOT EXISTS participant (
+            CREATE TABLE IF NOT EXISTS participants (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 _event_id INTEGER NOT NULL,
                 _entity_id INTEGER NOT NULL,
                 role TEXT DEFAULT 'entry' CHECK(role IN ('home', 'away', 'entry')),
                 stage_position INTEGER CHECK (stage_position > 0),
                 
+                UNIQUE (_event_id, _entity_id),
+                
                 FOREIGN KEY (_event_id) REFERENCES events(id)
                     ON UPDATE CASCADE
+                
+                FOREIGN KEY (_entity_id) REFERENCES entities(id)
+                    ON UPDATE CASCADE
+                    ON DELETE RESTRICT        
             )
             """)
 
             cur.execute("""
             CREATE TABLE IF NOT EXISTS participant_score (
-                _event_id INTEGER NOT NULL,
                 _participant_id INTEGER NOT NULL,
                 score_value NUMERIC NOT NULL,
                 score_label TEXT NOT NULL,    -- points, goals, etc
-                
-                FOREIGN KEY (_event_id) REFERENCES events(id)
-                    ON UPDATE CASCADE
                 
                 FOREIGN KEY (_participant_id) REFERENCES participants(id)
                     ON UPDATE CASCADE
                     ON DELETE RESTRICT 
                 
-                PRIMARY KEY(_event_id, _participant_id, score_label)
+                PRIMARY KEY(_participant_id, score_label)
             )
             """)
 
