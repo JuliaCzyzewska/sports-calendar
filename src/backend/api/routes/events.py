@@ -13,5 +13,5 @@ def get_all_events(db = Depends(get_db)) -> list[EventResponse]:
 
 
 @router.get("/{event_id}")
-def get_event(event_id: int):
-    return {}
+def get_event(event_id: int, db = Depends(get_db)) -> EventResponse:
+    return event_service.get_one_event(event_id, db)
