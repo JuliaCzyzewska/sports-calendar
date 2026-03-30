@@ -8,6 +8,7 @@ from src.backend.models.venue import VenueResponse
 from src.backend.models.country import CountryResponse
 from src.backend.models.participant import ParticipantResponse
 from src.backend.models.entity import EntityResponse
+from src.backend.models.participant_score import ParticipantScoreResponse
 
 
 EVENTS_QUERY = """
@@ -41,9 +42,8 @@ PARTICIPANTS_QUERY = """
         p._event_id as event_id, 
         p.role, 
         p.stage_position,
-        en.id as entity_id,
-        en.type as entity_type, 
         en.name as entity_name,
+        en.type as entity_type, 
         en.official_name as entity_official_name, 
         en.slug as entity_slug,
         en.abbreviation as entity_abbreviation,
@@ -56,21 +56,60 @@ PARTICIPANTS_QUERY = """
 """   # placeholders - stirng of "?", "?"...; placeholder of ids of all needed events
 
 
+SCORES_QUERY = """
+    SELECT
+        ps._participant_id as participant_id,
+        ps.score_value,
+        ps.score_label
+    FROM participant_scores ps
+    WHERE ps._participant_id IN ({placeholders})
+"""
+
+def fetch_participant_scores(db, participant_rows) -> dict[int, list[ParticipantScoreResponse]]:
+    if not participant_rows:
+        return {}
+
+     # fetch all scores for all participants
+    participant_ids = [row["id"] for row in participant_rows]
+    placeholders = ",".join("?" * len(participant_ids))
+    score_rows = db.execute(
+        SCORES_QUERY.format(placeholders=placeholders),
+        participant_ids
+    ).fetchall()
+
+    # group scores by participant_id
+    scores_by_participant = defaultdict(list)
+    for row in score_rows:
+        scores_by_participant[row["participant_id"]].append(
+            ParticipantScoreResponse(
+                score_value=row["score_value"],
+                score_label=row["score_label"]
+            )
+        )
+    return scores_by_participant
+
+
+
 def fetch_participants_by_event(db, event_ids: list[int]) -> dict[int, list[ParticipantResponse]]:
     placeholders = ",".join("?" * len(event_ids))
-    rows = db.execute(
+    participant_rows = db.execute(
         PARTICIPANTS_QUERY.format(placeholders=placeholders),
         event_ids
     ).fetchall()
 
+    if not participant_rows:
+        return {}
+
+    scores_by_participant = fetch_participant_scores(db, participant_rows)
+
+    # group participants by event_id
     participants_by_event = defaultdict(list)
-    for row in rows:
+    for row in participant_rows:
         participants_by_event[row["event_id"]].append(
             ParticipantResponse(
                 role=row["role"],
                 stage_position=row["stage_position"],
-                entity_id=row["entity_id"],
-                entity_name=row["entity_name"],
+                score=scores_by_participant[row["id"]] or None,
                 entity=EntityResponse(
                     type=row["entity_type"],
                     name=row["entity_name"],
