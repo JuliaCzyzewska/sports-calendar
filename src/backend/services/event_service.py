@@ -306,27 +306,27 @@ def row_to_event_response(row, participants: list[ParticipantResponse], results:
 
 def get_all_events(db) -> list[EventResponse]:
     cur = db.cursor()
-    results = cur.execute(EVENTS_QUERY).fetchall()
-    if not results:
+    rows = cur.execute(EVENTS_QUERY).fetchall()
+    if not rows:
         return []
-    event_ids = [row["event_id"] for row in results]
+    event_ids = [row["event_id"] for row in rows]
     participants_by_event = fetch_participants_by_event(db, event_ids)
     results_by_event = fetch_results_by_event(db, event_ids)
 
-    return [row_to_event_response(row, participants_by_event.get(row["event_id"], []), results_by_event.get(row["event_id"], [])) for row in results]
+    return [row_to_event_response(row, participants_by_event.get(row["event_id"], []), results_by_event.get(row["event_id"], [])) for row in rows]
 
 
 def get_one_event(event_id: int, db) -> EventResponse:
     cur = db.cursor()
-    result = cur.execute(
+    row = cur.execute(
         EVENTS_QUERY + " WHERE e.id = ?", [event_id]
     ).fetchone()
-    if not result:
+    if not row:
             raise HTTPException(status_code=404, detail="Event not found")
     
     participants_by_event = fetch_participants_by_event(db, [event_id])
     results_by_event = fetch_results_by_event(db, [event_id])
-    return row_to_event_response(result, participants_by_event.get(result["event_id"], []), results_by_event.get(result["event_id"], []))
+    return row_to_event_response(row, participants_by_event.get(row["event_id"], []), results_by_event.get(row["event_id"], []))
 
 
 def post_event(event: EventCreate, db) -> EventResponse:
