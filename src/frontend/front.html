@@ -104,6 +104,11 @@
   .status-scheduled { color: #47aaff; border-color: #47aaff; }
   .status-cancelled { color: #6b6b80; border-color: #2a2a3a; text-decoration: line-through; }
 
+  .participant, .incident, .result {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
   footer {
     padding: 24px;
     text-align: center;
@@ -192,21 +197,57 @@ function renderEvents(events) {
     html += `<div class="season-section">
                <div class="season-title">Season ${season}</div>
                <div class="events-grid">`;
+
     seasons[season].forEach(e => {
       const sport = e.competition?.sport_type || 'Sport';
       const status = e.status || 'unknown';
-      const participants = e.participants?.map(p => p.entity?.name || '—').join(', ') || 'TBD';
-      html += `<div class="event-card">
-                 <span class="sport-tag">${sport}</span>
-                 <span class="status-badge status-${status}">${status}</span>
-                 <p>${participants}</p>
-               </div>`;
+      const competitionName = e.competition?.name || 'Competition';
+      const date = e.date_venue || '';
+      const time = e.time_venue_utc || '';
+      const venueName = e.venue?.name || '';
+      const venueCity = e.venue?.city || '';
+      const venueCountry = e.venue?.country?.name || '';
+
+      // participants
+      let participantsHtml = '';
+      e.participants?.forEach(p => {
+        const pName = p.entity?.official_name || p.entity?.name || 'TBD';
+        const pCountry = p.entity?.country?.name || '';
+        const role = p.role || '';
+        const score = p.score?.map(s => `${s.score_value} ${s.score_label}`).join(', ') || '';
+        const incidents = p.incidents?.map(i => {
+          const entityName = i.entity?.name || '';
+          const minute = i.minute != null ? ` at ${i.minute}'` : '';
+          return `${i.incident_type}${entityName ? ' by ' + entityName : ''}${minute}`;
+        }).join('; ') || '';
+        participantsHtml += `<div class="participant"><strong>${role.toUpperCase()}</strong>: ${pName} (${pCountry}) ${score ? '- ' + score : ''}${incidents ? '<br><span class="incident"><strong>INCIDENTS:</strong> ' + incidents + '</span>' : ''}</div>`;
+      });
+
+      // results
+      let resultsHtml = '';
+      e.results?.forEach(r => {
+        const winner = r.entity?.official_name || r.entity?.name || '';
+        resultsHtml += `<div class="result">${r.outcome_type.toUpperCase()}: ${winner} — ${r.message}</div>`;
+      });
+
+      html += `
+      <div class="event-card">
+        <span class="sport-tag">${sport}</span>
+        <span class="status-badge status-${status}">${status}</span>
+        <p><strong>Competition:</strong> ${competitionName}</p>
+        <p><strong>Date & Time:</strong> ${date} ${time}</p>
+        <p><strong>Venue:</strong> ${venueName}, ${venueCity}, ${venueCountry}</p>
+        <div><strong>Participants:</strong><br>${participantsHtml}</div>
+        ${resultsHtml ? `<div><strong>Results:</strong><br>${resultsHtml}</div>` : ''}
+      </div>`;
     });
+
     html += `</div></div>`;
   });
 
   root.innerHTML = html;
 }
+
 
 fetchEvents();
 </script>
