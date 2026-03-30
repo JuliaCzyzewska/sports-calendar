@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from collections import defaultdict
 
 from src.backend.models.event import EventResponse, EventCreate
-from src.backend.models.competition import CompetitionResponse
+from src.backend.models.competition import CompetitionSchema
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
 from src.backend.models.country import CountryResponse
@@ -293,7 +293,7 @@ def row_to_event_response(row, participants: list[ParticipantResponse], results:
             ) if row["venue_name"] else None,
 
 
-            competition=CompetitionResponse(
+            competition=CompetitionSchema(
                 slug=row["competition_slug"],
                 name=row["competition_name"],
                 sport_type=row["sport_type"],

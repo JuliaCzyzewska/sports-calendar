@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import date, time
 
-from src.backend.models.competition import CompetitionResponse
+from src.backend.models.competition import CompetitionSchema
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
 from src.backend.models.participant import ParticipantResponse
@@ -30,6 +30,6 @@ class EventResponse(BaseModel):
     time_venue_utc: time | None
     stage: StageResponse | None
     venue: VenueResponse | None
-    competition: CompetitionResponse
+    competition: CompetitionSchema
     participants: list[ParticipantResponse] | None
     results: list[EventResultResponse] | None
