@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    background: #0a0a0f;
+    color: #f0f0f0;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 60px;
+    background: #13131a;
+    border-bottom: 1px solid #2a2a3a;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: #9ce656;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+  }
+
+  .nav-links a {
+    color: #6b6b80;
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .filters {
+    padding: 16px 24px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid #2a2a3a;
+    color: #6b6b80;
+    cursor: pointer;
+  }
+
+  .filter-btn.active {
+    background: #9ce656;
+    color: #0a0a0f;
+    border-color: #9ce656;
+  }
+
+  .season-section {
+    padding: 16px 24px;
+  }
+
+  .season-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: #6b6b80;
+    margin-bottom: 12px;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  .event-card {
+    background: #13131a;
+    border: 1px solid #2a2a3a;
+    padding: 16px;
+  }
+
+  .sport-tag {
+    background: #9ce656;
+    color: #0a0a0f;
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border: 1px solid;
+  }
+
+  .status-played { color: #6b6b80; border-color: #2a2a3a; }
+  .status-live { color: #ff4757; border-color: #ff4757; }
+  .status-scheduled { color: #47aaff; border-color: #47aaff; }
+  .status-cancelled { color: #6b6b80; border-color: #2a2a3a; text-decoration: line-through; }
+
+  footer {
+    padding: 24px;
+    text-align: center;
+    border-top: 1px solid #2a2a3a;
+    font-size: 12px;
+    color: #6b6b80;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Sports Calendar</a>
+  <ul class="nav-links">
+    <li><a href="#">Events</a></li>
+    <li><a href="#">Competitions</a></li>
+    <li><a href="#">Teams</a></li>
+    <li><a href="#">Athletes</a></li>
+  </ul>
+</nav>
+
+<section class="hero" style="padding:24px;">
+  <h1 style="font-family:'Bebas Neue'; font-size:36px;">Sports Events</h1>
+  <p>All competitions, matches, and results in one place.</p>
+</section>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterEvents('all', this)">All</button>
+  <button class="filter-btn" onclick="filterEvents('scheduled', this)">Upcoming</button>
+  <button class="filter-btn" onclick="filterEvents('live', this)">Live</button>
+  <button class="filter-btn" onclick="filterEvents('played', this)">Played</button>
+  <button class="filter-btn" onclick="filterEvents('cancelled', this)">Cancelled</button>
+</div>
+
+<main class="events-container">
+  <div id="events-root"></div>
+</main>
+
+<footer>
+  Sports Calendar
+</footer>
+
+<script>
+const API = 'http://localhost:8000';
+let allEvents = [];
+let currentFilter = 'all';
+
+async function fetchEvents() {
+  const root = document.getElementById('events-root');
+  root.innerHTML = `<p>Loading events...</p>`;
+  try {
+    const res = await fetch(`${API}/events/`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    allEvents = await res.json();
+    renderEvents(allEvents);
+  } catch (e) {
+    root.innerHTML = `<p>Error loading events: ${e.message}</p>`;
+  }
+}
+
+function filterEvents(status, btn) {
+  currentFilter = status;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = status === 'all' ? allEvents : allEvents.filter(e => e.status === status);
+  renderEvents(filtered);
+}
+
+function renderEvents(events) {
+  const root = document.getElementById('events-root');
+  if (!events.length) {
+    root.innerHTML = `<p>No events found</p>`;
+    return;
+  }
+
+  // group events by season
+  const seasons = {};
+  events.forEach(e => {
+    const season = e.season || 'Unknown';
+    if (!seasons[season]) seasons[season] = [];
+    seasons[season].push(e);
+  });
+
+  let html = '';
+  Object.keys(seasons).sort((a,b) => b - a).forEach(season => {
+    html += `<div class="season-section">
+               <div class="season-title">Season ${season}</div>
+               <div class="events-grid">`;
+    seasons[season].forEach(e => {
+      const sport = e.competition?.sport_type || 'Sport';
+      const status = e.status || 'unknown';
+      const participants = e.participants?.map(p => p.entity?.name || '—').join(', ') || 'TBD';
+      html += `<div class="event-card">
+                 <span class="sport-tag">${sport}</span>
+                 <span class="status-badge status-${status}">${status}</span>
+                 <p>${participants}</p>
+               </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  root.innerHTML = html;
+}
+
+fetchEvents();
+</script>
+
+</body>
+</html>
