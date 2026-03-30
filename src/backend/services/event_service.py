@@ -12,7 +12,7 @@ from src.backend.models.participant_score import ParticipantScoreSchema
 from src.backend.models.event_incident import EventIncidentResponse
 from src.backend.models.event_result import EventResultResponse
 
-from src.backend.services.shared_queries import fetch_participants_by_event
+from src.backend.services.shared_queries import fetch_participants_by_event, fetch_results_by_event
 
 EVENTS_QUERY = """
     SELECT 
@@ -42,28 +42,6 @@ EVENTS_QUERY = """
 """
 
 
-RESULTS_QUERY = """
-    SELECT
-        er.id as event_result_id,
-        er._event_id as event_id,
-        er.category,
-        er.outcome_type,
-        er.message,
-        en.id as entity_id,
-        en.type as entity_type,
-        en.name as entity_name,
-        en.official_name as entity_official_name,
-        en.slug as entity_slug,
-        en.abbreviation as entity_abbreviation,
-        cn.id as country_id,
-        cn.abbreviation as country_abbreviation,
-        cn.name as country_name
-    FROM event_results er
-    LEFT JOIN entities en ON er._entity_id = en.id
-    LEFT JOIN countries cn ON en._country_id = cn.id
-    WHERE er._event_id IN ({placeholders})
-"""
-
 
 POST_EVENT_QUERY = """
     INSERT INTO events (
@@ -76,45 +54,6 @@ POST_EVENT_QUERY = """
         _competition_slug
     ) VALUES (?, ?, ?, ?, ?, ?, ?)
 """
-
-def fetch_results_by_event(db, event_ids: list[int]) -> dict[int, list[EventResultResponse]]:
-    if not event_ids:
-        return {}
-
-    placeholders = ",".join("?" * len(event_ids))
-    rows = db.execute(
-        RESULTS_QUERY.format(placeholders=placeholders),
-        event_ids
-    ).fetchall()
-
-    results_by_event = defaultdict(list)
-    for row in rows:
-        results_by_event[row["event_id"]].append(
-            EventResultResponse(
-                id=row["event_result_id"],
-                category=row["category"],
-                outcome_type=row["outcome_type"],
-                message=row["message"],
-                entity=EntityResponse(
-                    id=row["entity_id"],
-                    type=row["entity_type"],
-                    name=row["entity_name"],
-                    official_name=row["entity_official_name"],
-                    slug=row["entity_slug"],
-                    abbreviation=row["entity_abbreviation"],
-                    country=CountryResponse(
-                        id=row["country_id"],
-                        abbreviation=row["country_abbreviation"],
-                        name=row["country_name"]
-                    )
-                ) if row["entity_type"] else None
-            )
-        )
-    return results_by_event
-
-
-
-
 
 
 

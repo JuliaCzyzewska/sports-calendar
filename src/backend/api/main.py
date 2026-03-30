@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from src.backend.api.routes import (
     events, competitions, stages, 
     countries, venues, entities, participants, 
-    participant_scores, event_incident
+    participant_scores, event_incident, event_results
 )
 
 
@@ -17,3 +17,4 @@ app.include_router(entities.router)
 app.include_router(participants.router)
 app.include_router(participant_scores.router)
 app.include_router(event_incident.router)
+app.include_router(event_results.router)

@@ -135,7 +135,7 @@ def init_db():
             _event_id INTEGER NOT NULL,
             category TEXT,          -- NULL if it does not have categories, men, women -60kg, etc
             _entity_id INTEGER,     -- NULL if result is not win
-            outcome_type TEXT DEFAULT 'win' CHECK (outcome_type IN('win', 'draw', 'canceled', 'abandoned')),
+            outcome_type TEXT DEFAULT 'win' CHECK (outcome_type IN('win', 'draw', 'abandoned')),
             message TEXT,
             
             UNIQUE (_event_id, category),     -- one result per category per event; 
