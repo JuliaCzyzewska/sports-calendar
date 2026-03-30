@@ -1,4 +1,7 @@
 from pydantic import BaseModel, Field
+from src.backend.models.competition import CompetitionResponse
+from src.backend.models.stage import StageResponse
+from src.backend.models.venue import VenueResponse
 
 # request model- create, udpate
 class EventCreate(BaseModel):
@@ -11,12 +14,14 @@ class EventCreate(BaseModel):
     competition_slug: str
 
 
+
+
 # response model - get
 class EventResponse(BaseModel):
     status: str
     season: int
     date_venue: str | None
     time_venue_utc: str | None
-    stage_id: int | None
-    venue_id: int | None
-    competition_slug: str
+    stage: StageResponse | None
+    venue: VenueResponse | None
+    competition: CompetitionResponse
