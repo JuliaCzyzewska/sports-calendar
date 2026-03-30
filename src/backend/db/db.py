@@ -132,6 +132,8 @@ def init_db():
             _participant_id INTEGER NOT NULL,
             score_value NUMERIC NOT NULL,
             score_label TEXT NOT NULL,    -- points, goals, etc
+            
+            UNIQUE (_participant_id, score_label),
 
             FOREIGN KEY (_participant_id) REFERENCES participants(id)
                 ON UPDATE CASCADE
