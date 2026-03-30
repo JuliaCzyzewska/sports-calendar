@@ -1,16 +1,14 @@
 from fastapi import HTTPException
-from src.backend.models.participant import ParticipantCreate, ParticipantResponse
-from src.backend.models.entity import EntityResponse
-from src.backend.models.country import CountryResponse
 
+from src.backend.models.country import CountryResponse
+from src.backend.models.entity import EntityResponse
+from src.backend.models.participant import ParticipantCreate, ParticipantResponse
 from src.backend.services.shared_queries import (
     PARTICIPANTS_QUERY,
     fetch_participant_scores,
     fetch_participants_event_incidents,
-    row_to_participant_response
+    row_to_participant_response,
 )
-
-
 
 POST_PARTICIPANT_QUERY = """
     INSERT INTO participants (_event_id, _entity_id, role, stage_position)
@@ -32,7 +30,7 @@ def get_participants(event_id: int, db) -> list[ParticipantResponse]:
         row_to_participant_response(
             row,
             scores=scores_by_participant[row["participant_id"]],
-            incidents=incidents_by_participant[row["participant_id"]]
+            incidents=incidents_by_participant[row["participant_id"]],
         )
         for row in rows
     ]
@@ -41,7 +39,7 @@ def get_participants(event_id: int, db) -> list[ParticipantResponse]:
 def get_participant(event_id: int, participant_id: int, db) -> ParticipantResponse:
     row = db.execute(
         PARTICIPANTS_QUERY.format(placeholders="?") + " AND p.id = ?",
-        [event_id, participant_id]
+        [event_id, participant_id],
     ).fetchone()
     if not row:
         raise HTTPException(status_code=404, detail="Participant not found")
@@ -52,14 +50,15 @@ def get_participant(event_id: int, participant_id: int, db) -> ParticipantRespon
     return row_to_participant_response(
         row,
         scores=scores_by_participant[row["participant_id"]],
-        incidents=incidents_by_participant[row["participant_id"]]
+        incidents=incidents_by_participant[row["participant_id"]],
     )
 
-def post_participant(event_id: int, participant: ParticipantCreate, db) -> ParticipantResponse:
+
+def post_participant(
+    event_id: int, participant: ParticipantCreate, db
+) -> ParticipantResponse:
     # validate FKs
-    event = db.execute(
-        "SELECT id FROM events WHERE id = ?", [event_id]
-    ).fetchone()
+    event = db.execute("SELECT id FROM events WHERE id = ?", [event_id]).fetchone()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -71,7 +70,7 @@ def post_participant(event_id: int, participant: ParticipantCreate, db) -> Parti
         JOIN countries cn ON en._country_id = cn.id
         WHERE en.id = ?
         """,
-        [participant.entity_id]
+        [participant.entity_id],
     ).fetchone()
     if not entity:
         raise HTTPException(status_code=404, detail="Entity not found")
@@ -79,24 +78,31 @@ def post_participant(event_id: int, participant: ParticipantCreate, db) -> Parti
     # validate entity not already in this event
     existing = db.execute(
         "SELECT id FROM participants WHERE _event_id = ? AND _entity_id = ?",
-        [event_id, participant.entity_id]
+        [event_id, participant.entity_id],
     ).fetchone()
     if existing:
-        raise HTTPException(status_code=409, detail="Entity already participating in this event")
+        raise HTTPException(
+            status_code=409, detail="Entity already participating in this event"
+        )
 
     try:
         cur = db.cursor()
-        cur.execute(POST_PARTICIPANT_QUERY, [
-            event_id,
-            participant.entity_id,
-            participant.role,
-            participant.stage_position
-        ])
+        cur.execute(
+            POST_PARTICIPANT_QUERY,
+            [
+                event_id,
+                participant.entity_id,
+                participant.role,
+                participant.stage_position,
+            ],
+        )
         db.commit()
         new_id = cur.lastrowid
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Failed to create participant: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to create participant: {e}"
+        )
 
     return ParticipantResponse(
         id=new_id,
@@ -112,11 +118,7 @@ def post_participant(event_id: int, participant: ParticipantCreate, db) -> Parti
             country=CountryResponse(
                 id=entity["country_id"],
                 abbreviation=entity["country_abbreviation"],
-                name=entity["country_name"]
-            )
-        )
+                name=entity["country_name"],
+            ),
+        ),
     )
-
-
-
-

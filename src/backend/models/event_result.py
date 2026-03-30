@@ -1,12 +1,12 @@
-from pydantic import BaseModel
-from pydantic import field_validator
+from pydantic import BaseModel, field_validator
 
 from src.backend.models.entity import EntityResponse
 
+
 class EventResultCreate(BaseModel):
     category: str | None = None
-    outcome_type: str = "win"        # must be before entity_id
-    entity_id: int | None = None    
+    outcome_type: str = "win"  # must be before entity_id
+    entity_id: int | None = None
     message: str | None = None
 
     @field_validator("outcome_type")

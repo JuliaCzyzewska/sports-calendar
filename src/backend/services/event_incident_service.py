@@ -1,7 +1,8 @@
 from fastapi import HTTPException
-from src.backend.models.event_incident import EventIncidentCreate, EventIncidentResponse
-from src.backend.models.entity import EntityResponse
+
 from src.backend.models.country import CountryResponse
+from src.backend.models.entity import EntityResponse
+from src.backend.models.event_incident import EventIncidentCreate, EventIncidentResponse
 
 INCIDENTS_QUERY = """
     SELECT
@@ -28,40 +29,54 @@ POST_INCIDENT_QUERY = """
     VALUES (?, ?, ?, ?)
 """
 
+
 def row_to_incident_response(row) -> EventIncidentResponse:
     return EventIncidentResponse(
         id=row["event_incident_id"],
         incident_type=row["incident_type"],
         minute=row["minute"],
-        entity=EntityResponse(
-            id=row["entity_id"],
-            type=row["entity_type"],
-            name=row["entity_name"],
-            official_name=row["entity_official_name"],
-            slug=row["entity_slug"],
-            abbreviation=row["entity_abbreviation"],
-            country=CountryResponse(
-                id=row["country_id"],
-                abbreviation=row["country_abbreviation"],
-                name=row["country_name"]
+        entity=(
+            EntityResponse(
+                id=row["entity_id"],
+                type=row["entity_type"],
+                name=row["entity_name"],
+                official_name=row["entity_official_name"],
+                slug=row["entity_slug"],
+                abbreviation=row["entity_abbreviation"],
+                country=CountryResponse(
+                    id=row["country_id"],
+                    abbreviation=row["country_abbreviation"],
+                    name=row["country_name"],
+                ),
             )
-        ) if row["entity_id"] else None
+            if row["entity_id"]
+            else None
+        ),
     )
+
 
 def validate_participant(event_id: int, participant_id: int, db):
     participant = db.execute(
         "SELECT id FROM participants WHERE id = ? AND _event_id = ?",
-        [participant_id, event_id]
+        [participant_id, event_id],
     ).fetchone()
     if not participant:
-        raise HTTPException(status_code=404, detail="Participant not found for this event")
+        raise HTTPException(
+            status_code=404, detail="Participant not found for this event"
+        )
 
-def get_incidents(event_id: int, participant_id: int, db) -> list[EventIncidentResponse]:
+
+def get_incidents(
+    event_id: int, participant_id: int, db
+) -> list[EventIncidentResponse]:
     validate_participant(event_id, participant_id, db)
     rows = db.execute(INCIDENTS_QUERY, [participant_id]).fetchall()
     return [row_to_incident_response(row) for row in rows]
 
-def post_incident(event_id: int, participant_id: int, incident: EventIncidentCreate, db) -> EventIncidentResponse:
+
+def post_incident(
+    event_id: int, participant_id: int, incident: EventIncidentCreate, db
+) -> EventIncidentResponse:
     validate_participant(event_id, participant_id, db)
 
     # validate entity exists if provided
@@ -75,19 +90,22 @@ def post_incident(event_id: int, participant_id: int, incident: EventIncidentCre
             JOIN countries cn ON en._country_id = cn.id
             WHERE en.id = ?
             """,
-            [incident.entity_id]
+            [incident.entity_id],
         ).fetchone()
         if not entity:
             raise HTTPException(status_code=404, detail="Entity not found")
 
     try:
         cur = db.cursor()
-        cur.execute(POST_INCIDENT_QUERY, [
-            participant_id,
-            incident.entity_id,
-            incident.incident_type,
-            incident.minute
-        ])
+        cur.execute(
+            POST_INCIDENT_QUERY,
+            [
+                participant_id,
+                incident.entity_id,
+                incident.incident_type,
+                incident.minute,
+            ],
+        )
         db.commit()
         new_id = cur.lastrowid
     except Exception as e:
@@ -98,17 +116,21 @@ def post_incident(event_id: int, participant_id: int, incident: EventIncidentCre
         id=new_id,
         incident_type=incident.incident_type,
         minute=incident.minute,
-        entity=EntityResponse(
-            id=entity["id"],
-            type=entity["type"],
-            name=entity["name"],
-            official_name=entity["official_name"],
-            slug=entity["slug"],
-            abbreviation=entity["abbreviation"],
-            country=CountryResponse(
-                id=entity["country_id"],
-                abbreviation=entity["country_abbreviation"],
-                name=entity["country_name"]
+        entity=(
+            EntityResponse(
+                id=entity["id"],
+                type=entity["type"],
+                name=entity["name"],
+                official_name=entity["official_name"],
+                slug=entity["slug"],
+                abbreviation=entity["abbreviation"],
+                country=CountryResponse(
+                    id=entity["country_id"],
+                    abbreviation=entity["country_abbreviation"],
+                    name=entity["country_name"],
+                ),
             )
-        ) if entity else None
+            if entity
+            else None
+        ),
     )

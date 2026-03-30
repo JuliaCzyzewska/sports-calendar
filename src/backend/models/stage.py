@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
+
 class StageCreate(BaseModel):
     name: str
     ordering: int
-
 
 
 # response model - get

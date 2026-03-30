@@ -1,11 +1,12 @@
-from pydantic import BaseModel, Field
 from datetime import date, time
 
+from pydantic import BaseModel, Field
+
 from src.backend.models.competition import CompetitionSchema
+from src.backend.models.event_result import EventResultResponse
+from src.backend.models.participant import ParticipantResponse
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
-from src.backend.models.participant import ParticipantResponse
-from src.backend.models.event_result import EventResultResponse
 
 
 # request model- post
@@ -17,8 +18,6 @@ class EventCreate(BaseModel):
     stage_id: int | None
     venue_id: int | None
     competition_slug: str
-
-
 
 
 # response model - get

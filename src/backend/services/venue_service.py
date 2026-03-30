@@ -1,6 +1,7 @@
 from fastapi import HTTPException
-from src.backend.models.venue import VenueCreate, VenueResponse
+
 from src.backend.models.country import CountryResponse
+from src.backend.models.venue import VenueCreate, VenueResponse
 
 VENUES_QUERY = """
     SELECT
@@ -19,6 +20,7 @@ POST_VENUE_QUERY = """
     VALUES (?, ?, ?)
 """
 
+
 def row_to_venue_response(row) -> VenueResponse:
     return VenueResponse(
         id=row["id"],
@@ -27,21 +29,22 @@ def row_to_venue_response(row) -> VenueResponse:
         country=CountryResponse(
             id=row["country_id"],
             abbreviation=row["country_abbreviation"],
-            name=row["country_name"]
-        )
+            name=row["country_name"],
+        ),
     )
+
 
 def get_all_venues(db) -> list[VenueResponse]:
     rows = db.execute(VENUES_QUERY).fetchall()
     return [row_to_venue_response(row) for row in rows]
 
+
 def get_venue(venue_id: int, db) -> VenueResponse:
-    row = db.execute(
-        VENUES_QUERY + " WHERE v.id = ?", [venue_id]
-    ).fetchone()
+    row = db.execute(VENUES_QUERY + " WHERE v.id = ?", [venue_id]).fetchone()
     if not row:
         raise HTTPException(status_code=404, detail="Venue not found")
     return row_to_venue_response(row)
+
 
 def post_venue(venue: VenueCreate, db) -> VenueResponse:
     # validate FKs
@@ -65,8 +68,6 @@ def post_venue(venue: VenueCreate, db) -> VenueResponse:
         name=venue.name,
         city=venue.city,
         country=CountryResponse(
-            id=country["id"],
-            abbreviation=country["abbreviation"],
-            name=country["name"]
-        )
+            id=country["id"], abbreviation=country["abbreviation"], name=country["name"]
+        ),
     )

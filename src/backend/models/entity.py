@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 
 from src.backend.models.country import CountryResponse
 
+
 class EntityCreate(BaseModel):
     type: str
     name: str

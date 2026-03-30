@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+
 from src.backend.models.stage import StageCreate, StageResponse
 
 STAGES_QUERY = """
@@ -12,9 +13,14 @@ POST_STAGE_QUERY = """
     VALUES (?, ?, ?)
 """
 
+
 def get_stages_by_competition(competition_slug: str, db) -> list[StageResponse]:
     rows = db.execute(STAGES_QUERY, [competition_slug]).fetchall()
-    return [StageResponse(id=row["id"], name=row["name"], ordering=row["ordering"]) for row in rows]
+    return [
+        StageResponse(id=row["id"], name=row["name"], ordering=row["ordering"])
+        for row in rows
+    ]
+
 
 def get_stage(competition_slug: str, stage_id: int, db) -> StageResponse:
     row = db.execute(
@@ -23,6 +29,7 @@ def get_stage(competition_slug: str, stage_id: int, db) -> StageResponse:
     if not row:
         raise HTTPException(status_code=404, detail="Stage not found")
     return StageResponse(id=row["id"], name=row["name"], ordering=row["ordering"])
+
 
 def post_stage(competition_slug: str, stage: StageCreate, db) -> StageResponse:
     # validate FKs

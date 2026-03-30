@@ -1,11 +1,17 @@
 from fastapi import FastAPI
 
 from src.backend.api.routes import (
-    events, competitions, stages, 
-    countries, venues, entities, participants, 
-    participant_scores, event_incident, event_results
+    competitions,
+    countries,
+    entities,
+    event_incident,
+    event_results,
+    events,
+    participant_scores,
+    participants,
+    stages,
+    venues,
 )
-
 
 app = FastAPI()
 app.include_router(events.router)

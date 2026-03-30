@@ -6,4 +6,3 @@ class CompetitionSchema(BaseModel):
     name: str
     sport_type: str
     participation_type: str
-

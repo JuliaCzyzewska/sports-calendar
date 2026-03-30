@@ -1,36 +1,31 @@
-from fastapi import HTTPException
 from collections import defaultdict
 
-from src.backend.models.event import EventResponse, EventCreate
-from src.backend.models.competition import CompetitionSchema
-from src.backend.models.stage import StageResponse
-from src.backend.models.venue import VenueResponse
 from src.backend.models.country import CountryResponse
-from src.backend.models.participant import ParticipantResponse
 from src.backend.models.entity import EntityResponse
-from src.backend.models.participant_score import ParticipantScoreSchema
 from src.backend.models.event_incident import EventIncidentResponse
 from src.backend.models.event_result import EventResultResponse
+from src.backend.models.participant import ParticipantResponse
+from src.backend.models.participant_score import ParticipantScoreSchema
 
 PARTICIPANTS_QUERY = """
-    SELECT 
+    SELECT
         p.id as participant_id,
-        p._event_id as event_id, 
-        p.role, 
+        p._event_id as event_id,
+        p.role,
         p.stage_position,
         en.id as entity_id,
         en.name as entity_name,
-        en.type as entity_type, 
-        en.official_name as entity_official_name, 
+        en.type as entity_type,
+        en.official_name as entity_official_name,
         en.slug as entity_slug,
         en.abbreviation as entity_abbreviation,
         cn.id as country_id,
-        cn.abbreviation as country_abbreviation, 
+        cn.abbreviation as country_abbreviation,
         cn.name as country_name
     FROM participants p
     JOIN entities en ON p._entity_id = en.id
     JOIN countries cn ON en._country_id = cn.id
-    WHERE p._event_id IN ({placeholders})      
+    WHERE p._event_id IN ({placeholders})
 """
 
 
@@ -87,14 +82,16 @@ RESULTS_QUERY = """
     WHERE er._event_id IN ({placeholders})
 """
 
-def fetch_results_by_event(db, event_ids: list[int]) -> dict[int, list[EventResultResponse]]:
+
+def fetch_results_by_event(
+    db, event_ids: list[int]
+) -> dict[int, list[EventResultResponse]]:
     if not event_ids:
         return {}
 
     placeholders = ",".join("?" * len(event_ids))
     rows = db.execute(
-        RESULTS_QUERY.format(placeholders=placeholders),
-        event_ids
+        RESULTS_QUERY.format(placeholders=placeholders), event_ids
     ).fetchall()
 
     results_by_event = defaultdict(list)
@@ -105,26 +102,31 @@ def fetch_results_by_event(db, event_ids: list[int]) -> dict[int, list[EventResu
                 category=row["category"],
                 outcome_type=row["outcome_type"],
                 message=row["message"],
-                entity=EntityResponse(
-                    id=row["entity_id"],
-                    type=row["entity_type"],
-                    name=row["entity_name"],
-                    official_name=row["entity_official_name"],
-                    slug=row["entity_slug"],
-                    abbreviation=row["entity_abbreviation"],
-                    country=CountryResponse(
-                        id=row["country_id"],
-                        abbreviation=row["country_abbreviation"],
-                        name=row["country_name"]
+                entity=(
+                    EntityResponse(
+                        id=row["entity_id"],
+                        type=row["entity_type"],
+                        name=row["entity_name"],
+                        official_name=row["entity_official_name"],
+                        slug=row["entity_slug"],
+                        abbreviation=row["entity_abbreviation"],
+                        country=CountryResponse(
+                            id=row["country_id"],
+                            abbreviation=row["country_abbreviation"],
+                            name=row["country_name"],
+                        ),
                     )
-                ) if row["entity_id"] else None
+                    if row["entity_id"]
+                    else None
+                ),
             )
         )
     return results_by_event
 
 
-
-def fetch_participant_scores(db, participant_rows) -> dict[int, list[ParticipantScoreSchema]]:
+def fetch_participant_scores(
+    db, participant_rows
+) -> dict[int, list[ParticipantScoreSchema]]:
     if not participant_rows:
         return {}
 
@@ -132,8 +134,7 @@ def fetch_participant_scores(db, participant_rows) -> dict[int, list[Participant
     participant_ids = [row["participant_id"] for row in participant_rows]
     placeholders = ",".join("?" * len(participant_ids))
     score_rows = db.execute(
-        SCORES_QUERY.format(placeholders=placeholders),
-        participant_ids
+        SCORES_QUERY.format(placeholders=placeholders), participant_ids
     ).fetchall()
 
     # group scores by participant_id
@@ -141,14 +142,15 @@ def fetch_participant_scores(db, participant_rows) -> dict[int, list[Participant
     for row in score_rows:
         scores_by_participant[row["participant_id"]].append(
             ParticipantScoreSchema(
-                score_value=row["score_value"],
-                score_label=row["score_label"]
+                score_value=row["score_value"], score_label=row["score_label"]
             )
         )
     return scores_by_participant
 
 
-def fetch_participants_event_incidents(db, participant_rows) -> dict[int, list[EventIncidentResponse]]:
+def fetch_participants_event_incidents(
+    db, participant_rows
+) -> dict[int, list[EventIncidentResponse]]:
     if not participant_rows:
         return {}
 
@@ -156,8 +158,7 @@ def fetch_participants_event_incidents(db, participant_rows) -> dict[int, list[E
     participant_ids = [row["participant_id"] for row in participant_rows]
     placeholders = ",".join("?" * len(participant_ids))
     incident_rows = db.execute(
-        EVENT_INCIDENTS_QUERY.format(placeholders=placeholders),
-        participant_ids
+        EVENT_INCIDENTS_QUERY.format(placeholders=placeholders), participant_ids
     ).fetchall()
 
     # group incidents by participant_id
@@ -166,27 +167,33 @@ def fetch_participants_event_incidents(db, participant_rows) -> dict[int, list[E
         incidents_by_participant[row["participant_id"]].append(
             EventIncidentResponse(
                 id=row["event_incident_id"],
-                entity=EntityResponse(
-                    id=row["entity_id"],
-                    type=row["entity_type"],
-                    name=row["entity_name"],
-                    official_name=row["entity_official_name"],
-                    slug=row["entity_slug"],
-                    abbreviation=row["entity_abbreviation"],
-                    country=CountryResponse(
-                        id=row["country_id"],
-                        abbreviation=row["country_abbreviation"],
-                        name=row["country_name"]
+                entity=(
+                    EntityResponse(
+                        id=row["entity_id"],
+                        type=row["entity_type"],
+                        name=row["entity_name"],
+                        official_name=row["entity_official_name"],
+                        slug=row["entity_slug"],
+                        abbreviation=row["entity_abbreviation"],
+                        country=CountryResponse(
+                            id=row["country_id"],
+                            abbreviation=row["country_abbreviation"],
+                            name=row["country_name"],
+                        ),
                     )
-                ) if row["entity_id"] else None,
+                    if row["entity_id"]
+                    else None
+                ),
                 incident_type=row["incident_type"],
-                minute=row["minute"]
+                minute=row["minute"],
             )
         )
     return incidents_by_participant
 
 
-def row_to_participant_response(row, scores=None, incidents=None) -> ParticipantResponse:
+def row_to_participant_response(
+    row, scores=None, incidents=None
+) -> ParticipantResponse:
     return ParticipantResponse(
         id=row["participant_id"],
         role=row["role"],
@@ -203,17 +210,18 @@ def row_to_participant_response(row, scores=None, incidents=None) -> Participant
             country=CountryResponse(
                 id=row["country_id"],
                 abbreviation=row["country_abbreviation"],
-                name=row["country_name"]
-            )
-        )
+                name=row["country_name"],
+            ),
+        ),
     )
 
 
-def fetch_participants_by_event(db, event_ids: list[int]) -> dict[int, list[ParticipantResponse]]:
+def fetch_participants_by_event(
+    db, event_ids: list[int]
+) -> dict[int, list[ParticipantResponse]]:
     placeholders = ",".join("?" * len(event_ids))
     participant_rows = db.execute(
-        PARTICIPANTS_QUERY.format(placeholders=placeholders),
-        event_ids
+        PARTICIPANTS_QUERY.format(placeholders=placeholders), event_ids
     ).fetchall()
 
     if not participant_rows:
@@ -228,7 +236,7 @@ def fetch_participants_by_event(db, event_ids: list[int]) -> dict[int, list[Part
             row_to_participant_response(
                 row,
                 scores=scores_by_participant[row["participant_id"]],
-                incidents=incidents_by_participant[row["participant_id"]]
+                incidents=incidents_by_participant[row["participant_id"]],
             )
         )
     return participants_by_event
