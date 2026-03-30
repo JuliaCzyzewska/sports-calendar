@@ -6,6 +6,8 @@
 <title>Sports Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  * { box-sizing: border-box; }
+
   body {
     margin: 0;
     font-family: 'DM Sans', sans-serif;
@@ -34,6 +36,8 @@
     list-style: none;
     display: flex;
     gap: 24px;
+    margin: 0;
+    padding: 0;
   }
 
   .nav-links a {
@@ -47,14 +51,17 @@
     padding: 16px 24px;
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .filter-btn {
-    padding: 6px 12px;
+    padding: 6px 14px;
     background: transparent;
     border: 1px solid #2a2a3a;
     color: #6b6b80;
     cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
   }
 
   .filter-btn.active {
@@ -76,37 +83,87 @@
 
   .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 12px;
+    /* allow children to overflow their grid cell */
+    overflow: visible;
   }
 
   .event-card {
     background: #13131a;
     border: 1px solid #2a2a3a;
     padding: 16px;
+    /* let the table spill beyond card width */
+    overflow: visible;
+    /* give the card a stable width so the grid column doesn't collapse */
+    min-width: 0;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
 
   .sport-tag {
     background: #9ce656;
     color: #0a0a0f;
-    font-size: 10px;
-    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .status-badge {
-    font-size: 10px;
-    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 9px;
     border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
-  .status-played { color: #6b6b80; border-color: #2a2a3a; }
-  .status-live { color: #ff4757; border-color: #ff4757; }
-  .status-scheduled { color: #47aaff; border-color: #47aaff; }
-  .status-cancelled { color: #6b6b80; border-color: #2a2a3a; text-decoration: line-through; }
+  .status-played   { color: #6b6b80; border-color: #2a2a3a; }
+  .status-live     { color: #ff4757; border-color: #ff4757; }
+  .status-scheduled{ color: #47aaff; border-color: #47aaff; }
+  .status-cancelled{ color: #6b6b80; border-color: #2a2a3a; text-decoration: line-through; }
 
-  .participant, .incident, .result {
+  /* table wrapper lets it scroll horizontally without clipping */
+  .table-scroll {
+    overflow-x: auto;
+    margin-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  table {
+    /* table is as wide as its content needs, never squeezed */
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #2a2a3a;
+    padding: 5px 8px;
     font-size: 12px;
-    margin-bottom: 4px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th {
+    background: #1a1a25;
+    color: #9ce656;
+  }
+
+  .results-block {
+    margin-top: 10px;
+  }
+
+  .results-block p {
+    margin: 2px 0;
+    font-size: 13px;
   }
 
   footer {
@@ -115,6 +172,7 @@
     border-top: 1px solid #2a2a3a;
     font-size: 12px;
     color: #6b6b80;
+    margin-top: 24px;
   }
 </style>
 </head>
@@ -130,9 +188,9 @@
   </ul>
 </nav>
 
-<section class="hero" style="padding:24px;">
-  <h1 style="font-family:'Bebas Neue'; font-size:36px;">Sports Events</h1>
-  <p>All competitions, matches, and results in one place.</p>
+<section class="hero" style="padding:24px 24px 8px;">
+  <h1 style="font-family:'Bebas Neue'; font-size:36px; margin:0 0 4px;">Sports Events</h1>
+  <p style="margin:0; color:#6b6b80;">All competitions, matches, and results in one place.</p>
 </section>
 
 <div class="filters">
@@ -147,30 +205,26 @@
   <div id="events-root"></div>
 </main>
 
-<footer>
-  Sports Calendar
-</footer>
+<footer>Sports Calendar</footer>
 
 <script>
 const API = 'http://localhost:8000';
 let allEvents = [];
-let currentFilter = 'all';
 
 async function fetchEvents() {
   const root = document.getElementById('events-root');
-  root.innerHTML = `<p>Loading events...</p>`;
+  root.innerHTML = `<p style="padding:24px; color:#6b6b80;">Loading events…</p>`;
   try {
     const res = await fetch(`${API}/events/`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     allEvents = await res.json();
     renderEvents(allEvents);
   } catch (e) {
-    root.innerHTML = `<p>Error loading events: ${e.message}</p>`;
+    root.innerHTML = `<p style="padding:24px; color:#ff4757;">Error loading events: ${e.message}</p>`;
   }
 }
 
 function filterEvents(status, btn) {
-  currentFilter = status;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const filtered = status === 'all' ? allEvents : allEvents.filter(e => e.status === status);
@@ -180,11 +234,10 @@ function filterEvents(status, btn) {
 function renderEvents(events) {
   const root = document.getElementById('events-root');
   if (!events.length) {
-    root.innerHTML = `<p>No events found</p>`;
+    root.innerHTML = `<p style="padding:24px; color:#6b6b80;">No events found.</p>`;
     return;
   }
 
-  // group events by season
   const seasons = {};
   events.forEach(e => {
     const season = e.season || 'Unknown';
@@ -193,52 +246,84 @@ function renderEvents(events) {
   });
 
   let html = '';
-  Object.keys(seasons).sort((a,b) => b - a).forEach(season => {
+  Object.keys(seasons).sort((a, b) => b - a).forEach(season => {
     html += `<div class="season-section">
                <div class="season-title">Season ${season}</div>
                <div class="events-grid">`;
 
     seasons[season].forEach(e => {
-      const sport = e.competition?.sport_type || 'Sport';
-      const status = e.status || 'unknown';
-      const competitionName = e.competition?.name || 'Competition';
-      const date = e.date_venue || '';
-      const time = e.time_venue_utc || '';
-      const venueName = e.venue?.name || '';
-      const venueCity = e.venue?.city || '';
-      const venueCountry = e.venue?.country?.name || '';
+      const sport       = e.competition?.sport_type || 'Sport';
+      const status      = e.status || 'unknown';
+      const competition = e.competition?.name || 'Competition';
+      const dateTime    = e.date_venue ? `${e.date_venue} ${e.time_venue_utc || ''}`.trim() : '—';
+      const venue       = e.venue
+        ? `${e.venue.name}, ${e.venue.city}, ${e.venue.country?.name || ''}`
+        : '—';
 
-      // participants
-      let participantsHtml = '';
-      e.participants?.forEach(p => {
-        const pName = p.entity?.official_name || p.entity?.name || 'TBD';
-        const pCountry = p.entity?.country?.name || '';
-        const role = p.role || '';
-        const score = p.score?.map(s => `${s.score_value} ${s.score_label}`).join(', ') || '';
-        const incidents = p.incidents?.map(i => {
-          const entityName = i.entity?.name || '';
-          const minute = i.minute != null ? ` at ${i.minute}'` : '';
-          return `${i.incident_type}${entityName ? ' by ' + entityName : ''}${minute}`;
-        }).join('; ') || '';
-        participantsHtml += `<div class="participant"><strong>${role.toUpperCase()}</strong>: ${pName} (${pCountry}) ${score ? '- ' + score : ''}${incidents ? '<br><span class="incident"><strong>INCIDENTS:</strong> ' + incidents + '</span>' : ''}</div>`;
+      // participants rows
+      let participantRows = '';
+      (e.participants || []).forEach(p => {
+        const role    = p.role?.toUpperCase() || '—';
+        const name    = p.entity?.official_name || '—';
+        const country = p.entity?.country?.name || '—';
+        const score   = p.score?.length
+          ? p.score.map(s => `${s.score_value} ${s.score_label}`).join(', ')
+          : '—';
+        const incidents = p.incidents?.length
+          ? p.incidents.map(i => {
+              const who    = i.entity?.name ? ` by ${i.entity.name}` : '';
+              const min    = i.minute != null ? ` at ${i.minute}'` : '';
+              return `${i.incident_type.toUpperCase()}${who}${min}`;
+            }).join('; ')
+          : '—';
+
+        participantRows += `<tr>
+          <td>${role}</td>
+          <td>${name}</td>
+          <td>${country}</td>
+          <td>${score}</td>
+          <td>${incidents}</td>
+        </tr>`;
       });
 
-      // results
+      if (!participantRows) {
+        participantRows = `<tr><td colspan="5" style="color:#6b6b80;">—</td></tr>`;
+      }
+
+      // results rows
       let resultsHtml = '';
-      e.results?.forEach(r => {
-        const winner = r.entity?.official_name || r.entity?.name || '';
-        resultsHtml += `<div class="result">${r.outcome_type.toUpperCase()}: ${winner} — ${r.message}</div>`;
-      });
+      if (e.results?.length) {
+        e.results.forEach(r => {
+          const winner  = r.entity?.official_name || '—';
+          const message = r.message || '—';
+          resultsHtml += `<p>${r.outcome_type?.toUpperCase() || '—'}: ${winner} — ${message}</p>`;
+        });
+      } else {
+        resultsHtml = `<p style="color:#6b6b80;">—</p>`;
+      }
 
-      html += `
-      <div class="event-card">
-        <span class="sport-tag">${sport}</span>
-        <span class="status-badge status-${status}">${status}</span>
-        <p><strong>Competition:</strong> ${competitionName}</p>
-        <p><strong>Date & Time:</strong> ${date} ${time}</p>
-        <p><strong>Venue:</strong> ${venueName}, ${venueCity}, ${venueCountry}</p>
-        <div><strong>Participants:</strong><br>${participantsHtml}</div>
-        ${resultsHtml ? `<div><strong>Results:</strong><br>${resultsHtml}</div>` : ''}
+      html += `<div class="event-card">
+        <div class="card-tags">
+          <span class="sport-tag">${sport}</span>
+          <span class="status-badge status-${status}">${status}</span>
+        </div>
+
+        <p style="margin:4px 0;"><strong>Competition:</strong> ${competition}</p>
+        <p style="margin:4px 0;"><strong>Date &amp; Time:</strong> ${dateTime}</p>
+        <p style="margin:4px 0;"><strong>Venue:</strong> ${venue}</p>
+
+        <p style="margin:10px 0 4px;"><strong>Participants:</strong></p>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Role</th><th>Name</th><th>Country</th><th>Score</th><th>Incidents</th></tr>
+            ${participantRows}
+          </table>
+        </div>
+
+        <div class="results-block">
+          <p style="margin:0 0 4px;"><strong>Results:</strong></p>
+          ${resultsHtml}
+        </div>
       </div>`;
     });
 
@@ -248,9 +333,7 @@ function renderEvents(events) {
   root.innerHTML = html;
 }
 
-
 fetchEvents();
 </script>
-
 </body>
 </html>
