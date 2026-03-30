@@ -3,6 +3,7 @@ from src.backend.models.competition import CompetitionResponse
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
 from src.backend.models.participant import ParticipantResponse
+from src.backend.models.event_result import EventResultResponse
 
 # request model- create, udpate
 class EventCreate(BaseModel):
@@ -27,3 +28,4 @@ class EventResponse(BaseModel):
     venue: VenueResponse | None
     competition: CompetitionResponse
     participants: list[ParticipantResponse]
+    results: list[EventResultResponse] | None

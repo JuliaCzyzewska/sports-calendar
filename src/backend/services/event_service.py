@@ -10,6 +10,8 @@ from src.backend.models.participant import ParticipantResponse
 from src.backend.models.entity import EntityResponse
 from src.backend.models.participant_score import ParticipantScoreResponse
 from src.backend.models.event_incident import EventIncidentResponse
+from src.backend.models.event_result import EventResultResponse
+
 
 EVENTS_QUERY = """
     SELECT 
@@ -83,6 +85,60 @@ EVENT_INCIDENTS_QUERY = """
     LEFT JOIN countries cn ON en._country_id = cn.id
     WHERE ei._participant_id IN ({placeholders})
 """
+
+
+RESULTS_QUERY = """
+    SELECT
+        er._event_id as event_id,
+        er.category,
+        er.outcome_type,
+        er.message,
+        en.type as entity_type,
+        en.name as entity_name,
+        en.official_name as entity_official_name,
+        en.slug as entity_slug,
+        en.abbreviation as entity_abbreviation,
+        cn.abbreviation as country_abbreviation,
+        cn.name as country_name
+    FROM event_results er
+    LEFT JOIN entities en ON er._entity_id = en.id
+    LEFT JOIN countries cn ON en._country_id = cn.id
+    WHERE er._event_id IN ({placeholders})
+"""
+
+
+
+def fetch_results_by_event(db, event_ids: list[int]) -> dict[int, list[EventResultResponse]]:
+    if not event_ids:
+        return {}
+
+    placeholders = ",".join("?" * len(event_ids))
+    rows = db.execute(
+        RESULTS_QUERY.format(placeholders=placeholders),
+        event_ids
+    ).fetchall()
+
+    results_by_event = defaultdict(list)
+    for row in rows:
+        results_by_event[row["event_id"]].append(
+            EventResultResponse(
+                category=row["category"],
+                outcome_type=row["outcome_type"],
+                message=row["message"],
+                entity=EntityResponse(
+                    type=row["entity_type"],
+                    name=row["entity_name"],
+                    official_name=row["entity_official_name"],
+                    slug=row["entity_slug"],
+                    abbreviation=row["entity_abbreviation"],
+                    country=CountryResponse(
+                        abbreviation=row["country_abbreviation"],
+                        name=row["country_name"]
+                    )
+                ) if row["entity_type"] else None
+            )
+        )
+    return results_by_event
 
 
 def fetch_participant_scores(db, participant_rows) -> dict[int, list[ParticipantScoreResponse]]:
@@ -182,7 +238,7 @@ def fetch_participants_by_event(db, event_ids: list[int]) -> dict[int, list[Part
     return participants_by_event
 
 
-def row_to_event_response(row, participants: list[ParticipantResponse]) -> EventResponse:
+def row_to_event_response(row, participants: list[ParticipantResponse], results: list[EventResultResponse]) -> EventResponse:
     return EventResponse(
             status=row["status"],
             season=row["season"],
@@ -211,7 +267,8 @@ def row_to_event_response(row, participants: list[ParticipantResponse]) -> Event
                 participation_type=row["participation_type"]
             ),
 
-            participants=participants
+            participants=participants,
+            results=results or None
     )
 
 def get_all_events(db) -> list[EventResponse]:
@@ -221,8 +278,9 @@ def get_all_events(db) -> list[EventResponse]:
         return []
     event_ids = [row["id"] for row in results]
     participants_by_event = fetch_participants_by_event(db, event_ids)
+    results_by_event = fetch_results_by_event(db, event_ids)
 
-    return [row_to_event_response(row, participants_by_event[row["id"]]) for row in results]
+    return [row_to_event_response(row, participants_by_event[row["id"]], results_by_event[row["id"]]) for row in results]
 
 
 def get_one_event(event_id: int, db) -> EventResponse:
@@ -234,4 +292,5 @@ def get_one_event(event_id: int, db) -> EventResponse:
             raise HTTPException(status_code=404, detail="Event not found")
     
     participants_by_event = fetch_participants_by_event(db, [event_id])
-    return row_to_event_response(result, participants_by_event[result["id"]])
+    results_by_event = fetch_results_by_event(db, [event_id])
+    return row_to_event_response(result, participants_by_event[result["id"]], results_by_event[result["id"]])

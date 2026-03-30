@@ -178,7 +178,6 @@ def init_db():
             FOREIGN KEY (_entity_id) REFERENCES entities(id)
                 ON UPDATE CASCADE
                 ON DELETE RESTRICT                    
-                
         )
         """)
 
