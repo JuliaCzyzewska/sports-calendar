@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from collections import defaultdict
 
-from src.backend.models.event import EventResponse
+from src.backend.models.event import EventResponse, EventCreate
 from src.backend.models.competition import CompetitionResponse
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
@@ -107,6 +107,17 @@ RESULTS_QUERY = """
 """
 
 
+POST_EVENT_QUERY = """
+    INSERT INTO events (
+        status, 
+        season, 
+        date_venue, 
+        time_venue_utc, 
+        _stage_id, 
+        _venue_id, 
+        _competition_slug
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+"""
 
 def fetch_results_by_event(db, event_ids: list[int]) -> dict[int, list[EventResultResponse]]:
     if not event_ids:
@@ -240,6 +251,7 @@ def fetch_participants_by_event(db, event_ids: list[int]) -> dict[int, list[Part
 
 def row_to_event_response(row, participants: list[ParticipantResponse], results: list[EventResultResponse]) -> EventResponse:
     return EventResponse(
+            id=row["id"],
             status=row["status"],
             season=row["season"],
             date_venue=row["date_venue"],
@@ -267,7 +279,7 @@ def row_to_event_response(row, participants: list[ParticipantResponse], results:
                 participation_type=row["participation_type"]
             ),
 
-            participants=participants,
+            participants=participants or None,
             results=results or None
     )
 
@@ -280,7 +292,7 @@ def get_all_events(db) -> list[EventResponse]:
     participants_by_event = fetch_participants_by_event(db, event_ids)
     results_by_event = fetch_results_by_event(db, event_ids)
 
-    return [row_to_event_response(row, participants_by_event[row["id"]], results_by_event[row["id"]]) for row in results]
+    return [row_to_event_response(row, participants_by_event.get(results["id"], []), results_by_event.get(results["id"], [])) for row in results]
 
 
 def get_one_event(event_id: int, db) -> EventResponse:
@@ -293,4 +305,55 @@ def get_one_event(event_id: int, db) -> EventResponse:
     
     participants_by_event = fetch_participants_by_event(db, [event_id])
     results_by_event = fetch_results_by_event(db, [event_id])
-    return row_to_event_response(result, participants_by_event[result["id"]], results_by_event[result["id"]])
+    return row_to_event_response(result, participants_by_event.get(result["id"], []), results_by_event.get(result["id"], []))
+
+
+def post_event(event: EventCreate, db) -> EventResponse:
+    cur = db.cursor()
+
+    # validate FKs
+    competition = cur.execute(
+        "SELECT slug FROM competitions WHERE slug = ?",
+        [event.competition_slug]
+    ).fetchone()
+    if not competition:
+        raise HTTPException(404, detail="Competition not found")
+
+    if event.stage_id:
+        stage = cur.execute(
+            "SELECT id FROM stages WHERE id = ? AND _competition_slug = ?",
+            [event.stage_id, event.competition_slug]
+        ).fetchone()
+        if not stage:
+            raise HTTPException(404, detail="Stage not found for this competition")
+
+    if event.venue_id:
+        venue = cur.execute(
+            "SELECT id FROM venues WHERE id = ?",
+            [event.venue_id]
+        ).fetchone()
+        if not venue:
+            raise HTTPException(404, detail="Venue not found")
+        
+
+
+
+    # insert
+    try:
+        cur.execute(POST_EVENT_QUERY, [
+            event.status, 
+            event.season,
+            event.date_venue,
+            event.time_venue_utc,
+            event.stage_id,
+            event.venue_id,
+            event.competition_slug
+        ])
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, detail=f"Failed to create event: {e}")
+
+
+    # fetch
+    return get_one_event(cur.lastrowid, db)

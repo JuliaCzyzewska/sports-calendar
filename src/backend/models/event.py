@@ -5,7 +5,7 @@ from src.backend.models.venue import VenueResponse
 from src.backend.models.participant import ParticipantResponse
 from src.backend.models.event_result import EventResultResponse
 
-# request model- create, udpate
+# request model- post
 class EventCreate(BaseModel):
     status: str = Field(default="scheduled")
     season: int
@@ -20,6 +20,7 @@ class EventCreate(BaseModel):
 
 # response model - get
 class EventResponse(BaseModel):
+    id: int
     status: str
     season: int
     date_venue: str | None
@@ -27,5 +28,5 @@ class EventResponse(BaseModel):
     stage: StageResponse | None
     venue: VenueResponse | None
     competition: CompetitionResponse
-    participants: list[ParticipantResponse]
+    participants: list[ParticipantResponse] | None
     results: list[EventResultResponse] | None
