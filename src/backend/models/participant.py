@@ -5,6 +5,7 @@ from src.backend.models.event_incident import EventIncidentResponse
 
 # response model - get
 class ParticipantResponse(BaseModel):
+    id: int
     entity: EntityResponse
     role: str
     stage_position: int | None

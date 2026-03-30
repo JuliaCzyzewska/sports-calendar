@@ -5,6 +5,7 @@ from src.backend.models.entity import EntityResponse
 
 # response model - get
 class EventResultResponse(BaseModel):
+    id: int
     category: str | None = None
     entity: EntityResponse | None = None
     outcome_type: str

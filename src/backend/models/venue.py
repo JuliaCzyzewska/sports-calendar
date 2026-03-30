@@ -3,6 +3,7 @@ from src.backend.models.country import CountryResponse
 
 # response model - get
 class VenueResponse(BaseModel):
+    id: int
     name: str
     city: str | None
     country: CountryResponse
