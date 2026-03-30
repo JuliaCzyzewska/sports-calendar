@@ -7,7 +7,7 @@ from src.backend.models.event import EventResponse, EventCreate
 router = APIRouter(prefix="/events", tags=["events"])
 
 @router.get("/", response_model=list[EventResponse])
-def get_all_events(db = Depends(get_db)):
+def get_events(db = Depends(get_db)):
     return event_service.get_all_events(db)
 
 @router.get("/{event_id}", response_model=EventResponse)

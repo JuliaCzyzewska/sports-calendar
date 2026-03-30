@@ -11,7 +11,7 @@ def get_stages(competition_slug: str, db = Depends(get_db)):
     return stage_service.get_stages_by_competition(competition_slug, db)
 
 @router.get("/{stage_id}", response_model=StageResponse)
-def get_one_stage(competition_slug: str, stage_id: int, db = Depends(get_db)):
+def get_stage(competition_slug: str, stage_id: int, db = Depends(get_db)):
     return stage_service.get_stage(competition_slug, stage_id, db)
 
 @router.post("/", response_model=StageResponse, status_code=201)
