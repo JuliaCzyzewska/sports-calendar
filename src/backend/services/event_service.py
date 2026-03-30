@@ -358,14 +358,13 @@ def post_event(event: EventCreate, db) -> EventResponse:
         
 
 
-
     # insert
     try:
         cur.execute(POST_EVENT_QUERY, [
             event.status, 
             event.season,
-            event.date_venue,
-            event.time_venue_utc,
+            event.date_venue.isoformat() if event.date_venue else None,
+            event.time_venue_utc.isoformat() if event.time_venue_utc else None,
             event.stage_id,
             event.venue_id,
             event.competition_slug
