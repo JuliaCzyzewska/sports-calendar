@@ -1,0 +1,19 @@
+1. AI Tool Used:
+- Claude (Sonnet 4.6)
+- ChatGBT (OpenAI GPT-5-mini)
+
+
+2. How AI Was Used:
+   - To rewrite README sections for clarity and readability — e.g., formatting the project structure tree, finding better phrasing.
+   - To reduce the amount of boilerplate code written by hand.
+   - To generate .json files with seed data, including real-world examples of sports events.
+   - To gather information about possible technologies and techniques to assist with tasks (e.g., using the field validator decorator in FastAPI).
+   - To generate the initial structure of frontend HTML files, which were then edited manually.
+
+
+3. Limitations / Considerations:
+   - Some boilerplate code (e.g., service definitions and API routes) was generated using hand-typed example files as a guide.
+   - Generated code and information were reviewed line by line and adjusted to ensure correctness.
+   - Suggested technologies were verified with official documentation before implementation.
+   - If the purpose of any code line or function was unclear, AI was consulted to provide line-by-line explanations. Any logical inconsistencies were further researched and the code was rewritten manually.
+   - Results were tested manually (f.ex. via Swagger API documentation). Automated tests were not implemented due to time constraints.
