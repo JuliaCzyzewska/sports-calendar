@@ -8,7 +8,7 @@ from src.backend.models.venue import VenueResponse
 from src.backend.models.country import CountryResponse
 from src.backend.models.participant import ParticipantResponse
 from src.backend.models.entity import EntityResponse
-from src.backend.models.participant_score import ParticipantScoreResponse
+from src.backend.models.participant_score import ParticipantScoreSchema
 from src.backend.models.event_incident import EventIncidentResponse
 from src.backend.models.event_result import EventResultResponse
 

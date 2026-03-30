@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from src.backend.models.entity import EntityResponse
-from src.backend.models.participant_score import ParticipantScoreResponse
+from src.backend.models.participant_score import ParticipantScoreSchema
 from src.backend.models.event_incident import EventIncidentResponse
 
 class ParticipantCreate(BaseModel):
@@ -22,5 +22,5 @@ class ParticipantResponse(BaseModel):
     entity: EntityResponse
     role: str
     stage_position: int | None
-    score: list[ParticipantScoreResponse] | None = None
+    score: list[ParticipantScoreSchema] | None = None
     incidents: list[EventIncidentResponse] | None = None

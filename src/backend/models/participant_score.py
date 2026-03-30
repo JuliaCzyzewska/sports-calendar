@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 
-# response model - get
-class ParticipantScoreResponse(BaseModel):
+class ParticipantScoreSchema(BaseModel):
     score_value: int | float
     score_label: str

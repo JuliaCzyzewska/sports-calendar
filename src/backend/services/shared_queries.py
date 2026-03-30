@@ -8,7 +8,7 @@ from src.backend.models.venue import VenueResponse
 from src.backend.models.country import CountryResponse
 from src.backend.models.participant import ParticipantResponse
 from src.backend.models.entity import EntityResponse
-from src.backend.models.participant_score import ParticipantScoreResponse
+from src.backend.models.participant_score import ParticipantScoreSchema
 from src.backend.models.event_incident import EventIncidentResponse
 from src.backend.models.event_result import EventResultResponse
 
@@ -64,7 +64,7 @@ EVENT_INCIDENTS_QUERY = """
     WHERE ei._participant_id IN ({placeholders})
 """
 
-def fetch_participant_scores(db, participant_rows) -> dict[int, list[ParticipantScoreResponse]]:
+def fetch_participant_scores(db, participant_rows) -> dict[int, list[ParticipantScoreSchema]]:
     if not participant_rows:
         return {}
 
@@ -80,7 +80,7 @@ def fetch_participant_scores(db, participant_rows) -> dict[int, list[Participant
     scores_by_participant = defaultdict(list)
     for row in score_rows:
         scores_by_participant[row["participant_id"]].append(
-            ParticipantScoreResponse(
+            ParticipantScoreSchema(
                 score_value=row["score_value"],
                 score_label=row["score_label"]
             )
