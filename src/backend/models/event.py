@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from src.backend.models.competition import CompetitionResponse
 from src.backend.models.stage import StageResponse
 from src.backend.models.venue import VenueResponse
+from src.backend.models.participant import ParticipantResponse
 
 # request model- create, udpate
 class EventCreate(BaseModel):
@@ -25,3 +26,4 @@ class EventResponse(BaseModel):
     stage: StageResponse | None
     venue: VenueResponse | None
     competition: CompetitionResponse
+    participants: list[ParticipantResponse]
